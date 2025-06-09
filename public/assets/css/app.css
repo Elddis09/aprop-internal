@@ -1,0 +1,145 @@
+body {
+    padding-top: 80px; /* Adjust this value based on the height of your navbar */
+}
+
+/* SIDEBAR */
+/* =========== */
+#leftsidebar {
+    background-color: #5a74a1; /* Biru */
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 250px; /* Sesuaikan lebar sidebar */
+    overflow-y: auto; /* Kalau menu banyak bisa discroll */
+    z-index: 999; /* Supaya di atas konten lain */
+    color: white; /* Semua teks di sidebar jadi putih */
+}
+
+/* Biar konten utama tidak ketutup sidebar */
+.content {
+    margin-left: 250px; /* Sama kayak width sidebar */
+    padding: 20px;
+}
+
+/* Kalau sidebar ada link <a> di dalamnya, ini buat styling link-nya */
+#leftsidebar a, h6, p {
+    color: white;
+    text-decoration: none;
+}
+
+#leftsidebar li.header {
+    color: white;
+    font-weight: bold;
+}
+
+#leftsidebar a:hover {
+    text-decoration: underline;
+}
+
+.sidebar{
+    padding-top: 70px; /* Adjust as needed */
+}
+
+.list li.active > a {
+    background-color: #9FB3DF;
+    color: white;
+    font-weight: bold;
+}
+
+
+
+/* DATA PROPOSAL  */
+/* Mengatur posisi aksi di tengah tabel */
+.table td, .table th {
+    vertical-align: middle; /* Vertikal tengah */
+    text-align: center; /* Horizontal tengah */
+}
+
+/* Styling untuk link aksi di tabel */
+.table td a {
+    margin: 0 5px; /* Memberikan sedikit jarak antar link */
+    text-decoration: none; /* Hilangkan underline */
+    color: #007bff; /* Warna biru untuk link */
+}
+
+.table td a:hover {
+    text-decoration: underline; /* Menambahkan underline saat hover */
+}
+.badge {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 5px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* PROFILE */
+/* Profil Header (Gaya Latar Belakang Gelap) */
+.profile-header .body {
+    background-color: #303e51;
+    color: #fff; 
+    padding: 20px;
+}
+
+.card .body small, .card .body p {
+    color: #303e51; 
+}
+
+.card .body a {
+    color: #5e96e7; 
+}
+
+/* TIMELINE */
+/* Styling for the time-line icons */
+.cbp_tmicon {
+    width: 50px;              /* Width of the circle */
+    height: 50px;             /* Height of the circle */
+    background-color: #fff;   /* Background color of the circle */
+    border-radius: 50%;       /* To make it round */
+    display: flex;
+    justify-content: center;  /* Center the icon horizontally */
+    align-items: center;      /* Center the icon vertically */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Shadow for the circle */
+}
+
+/* For custom icon color */
+.cbp_tmicon.bg-info {
+    background-color: #17a2b8;
+}
+
+.cbp_tmicon.bg-green {
+    background-color: #28a745;
+}
+
+.cbp_tmicon.bg-orange {
+    background-color: #fd7e14;
+}
+
+.cbp_tmicon.bg-blush {
+    background-color: #e83e8c;
+}
+
+
+/* DATA PROPOSAL ADMIN */
+.project-actions .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Menambahkan jarak antar tombol */
+}
+
+.project-actions .actions a {
+    width: 100%; /* Tombol akan mengisi lebar kolom */
+}
+
+
+/* LOGIN */
+.authentication {
+    background-color: #e83e8c !important;
+}
+
