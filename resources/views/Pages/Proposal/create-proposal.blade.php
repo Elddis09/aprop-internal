@@ -6,39 +6,11 @@
 use App\Models\Mitra;
 @endphp
 
-<style>
-    /* Premium Checkbox Styles */
-    .form-check-input:checked {
-        background-color: #0057a0;
-        /* Customize checked background color */
-        border-color: #0057a0;
-        /* Customize border color */
-    }
-
-    .form-check-input:focus {
-        box-shadow: 0 0 0 0.2rem rgba(0, 87, 160, 0.25);
-        /* Focus effect */
-    }
-
-    .form-check-label {
-        font-weight: 600;
-        /* Making the label more prominent */
-        color: #333;
-        /* Darker text for better contrast */
-        font-size: 16px;
-        /* Slightly bigger font size for a more premium look */
-    }
-
-    .form-check-inline {
-        padding-right: 30px;
-        /* Adds spacing between each checkbox for a clean design */
-    }
-</style>
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30">
-            <img src="{{ asset('assets/images/logo.svg') }}" width="48" height="48" alt="Alpino">
+            <!-- <img src="{{ asset('assets/images/logo.png') }}" width="48" height="48" alt="APROP"> -->
         </div>
         <p>Please wait...</p>
     </div>
@@ -54,12 +26,12 @@ use App\Models\Mitra;
             <div class="block-header">
                 <div class="row clearfix">
                     <div class="col-lg-5 col-md-5 col-sm-12">
-                        <h2>Rekapitulasi Proposal</h2>
+                        <h2>Ajuan Proposal</h2>
                         <ul class="breadcrumb padding-0">
                             <li class="breadcrumb-item">
                                 <a href="index.html"><i class="zmdi zmdi-home"></i></a>
                             </li>
-                            <li class="breadcrumb-item active">Ajukan Proposal</li>
+                            <li class="breadcrumb-item active">Proposal Baru</li>
                         </ul>
                     </div>
                     <div class="col-lg-7 col-md-7 col-sm-12">
@@ -102,35 +74,45 @@ use App\Models\Mitra;
                                                 <label for="pengaju">Nama Pengaju</label>
                                                 <input type="text" name="pengaju" class="form-control" placeholder="Pengaju Berkas">
                                             </div>
-                                            <div class="col row-12 mt-3 text-muted">
-                                                <div class="form-group">
-                                                    <label for="cabang_olahraga">Cabang Olahraga / Mitra</label>
-                                                    <select name="cabang_olahraga" id="cabang_olahraga" class="form-control">
-                                                        <option value="" disabled selected>Pilih Cabang Olahraga / Mitra</option>
-                                                        @foreach($caborData as $pengaju)
-
-                                                        <option value="{{ ($pengaju['tipe'] ?? 'api') === 'mitra' ? 'mitra-' . $pengaju['id_cabor'] : $pengaju['id_cabor'] }}"
-                                                            {{ ($user->cabor_type === ($pengaju['tipe'] ?? 'api') && $user->cabor_id == $pengaju['id_cabor']) ? 'selected' : '' }}>
-                                                            {{ $pengaju['nama_cabor'] }}
-                                                            @if(($pengaju['tipe'] ?? 'api') === 'mitra')
-                                                            (Mitra)
-                                                            @endif
+                                            <div class="form-group mb-3">
+                                                <label for="cabang_olahraga" class="form-label fw-bold">Cabang Olahraga / Nama Pemohon</label>
+                                                <select name="cabang_olahraga" id="cabang_olahraga" class="form-control" required>
+                                                    <option value="">Pilih Cabang Olahraga atau Pemohon</option>
+                                                    <optgroup label="Cabang Olahraga">
+                                                        @foreach($caborData as $cabor)
+                                                        <option value="{{ $cabor->api_cabor_id }}" {{ old('cabang_olahraga') == $cabor->api_cabor_id ? 'selected' : '' }}>
+                                                            {{ $cabor->nama_cabor }}
                                                         </option>
                                                         @endforeach
+                                                    </optgroup>
+                                                    <optgroup label="Pemohon Terdaftar">
+                                                        @foreach($mitras as $mitra)
+                                                        <option value="mitra-{{ $mitra->id }}" {{ old('cabang_olahraga') == 'mitra-' . $mitra->id ? 'selected' : '' }}>
+                                                            {{ $mitra->nama }}
+                                                        </option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                    <option value="lainnya" {{ old('cabang_olahraga') == 'lainnya' ? 'selected' : '' }}>Lainnya (Tambah Pemohon Baru)</option>
+                                                </select>
+                                                @error('cabang_olahraga')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
 
-                                                        <option value="lainnya">Lainnya (Tambah Mitra Baru)</option>
-                                                    </select>
-
-                                                </div>
-                                                <!-- Input box muncul kalau 'lainnya' dipilih -->
-                                                <div class="form-group" id="mitra-baru-box" style="display: none;">
-                                                    <label for="nama_mitra_baru">Nama Mitra Baru</label>
-                                                    <input type="text" name="nama_mitra_baru" class="form-control" placeholder="Isi Nama Mitra Baru">
-                                                </div>
+                                            <div class="form-group mb-3" id="nama_mitra_baru_container" style="display: {{ old('cabang_olahraga') == 'lainnya' ? 'block' : 'none' }};">
+                                                <label for="nama_mitra_baru" class="form-label fw-bold">Nama Pemohon Baru</label>
+                                                <input type="text" class="form-control" id="nama_mitra_baru" name="nama_mitra_baru" value="{{ old('nama_mitra_baru') }}" {{ old('cabang_olahraga') == 'lainnya' ? 'required' : '' }}>
+                                                @error('nama_mitra_baru')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                             <div class="mb-3 text-muted">
                                                 <label for="alamat">Alamat</label>
                                                 <input type="text" name="alamat" class="form-control" placeholder="Alamat">
+                                            </div>
+                                            <div class="mb-3 text-muted">
+                                                <label for="alamat">Jabatan/Sebagai</label>
+                                                <input type="text" name="jabatan" class="form-control" placeholder="Jabatan">
                                             </div>
                                             <div class="row mb-3">
                                                 <div class="col text-muted">
@@ -153,7 +135,7 @@ use App\Models\Mitra;
                                             </div>
                                             <div class="mb-3">
                                                 <label for="jenis_berkas" class="form-label">Jenis Berkas</label><br>
-                                                <div class="d-flex gap-4">
+                                                <div class="d-flex flex-wrap gap-4">
                                                     <!-- Checkbox 1 -->
                                                     <div class="form-check form-check-inline">
                                                         <input type="checkbox" class="form-check-input" name="jenis_berkas[]" value="surat" id="jenis_berkas1" {{ in_array('surat', old('jenis_berkas', [])) ? 'checked' : '' }}>
@@ -171,10 +153,6 @@ use App\Models\Mitra;
                                                     </div>
                                                 </div>
                                             </div>
-
-
-
-
                                             <div class="mb-3">
                                                 <input type="text" name="judul_berkas" class="form-control" placeholder="Judul Berkas">
                                             </div>
@@ -187,7 +165,7 @@ use App\Models\Mitra;
                                             </div>
                                             <div class="mb-3">
                                                 <label>Tanggal Pengajuan</label>
-                                                <input type="date" name="tgl_pengajuan" class="form-control">
+                                                <input type="date" name="tgl_pengajuan" min="{{ \Carbon\Carbon::now()->toDateString() }}" class="form-control">
                                             </div>
                                             <div class="mb-3">
                                                 <label>File Utama</label>
@@ -197,11 +175,8 @@ use App\Models\Mitra;
                                             <div class="mb-3">
                                                 <input type="text" name="nama_petugas" class="form-control" placeholder="Nama Petugas">
                                             </div>
-                                            <div class="mb-3">
-                                                <input type="text" name="no_telepon_petugas" class="form-control" placeholder="No Telepon">
-                                            </div>
                                             <div class="d-flex justify-content-end">
-                                                <button type="submit" class="btn text-white" style="background-color: #0057a0; width: 150px;">Kirim</button>
+                                                <button type="submit" class="btn submit-button">Kirim</button>
                                             </div>
 
                                     </form>
@@ -212,37 +187,31 @@ use App\Models\Mitra;
                 </div>
             </div>
         </div>
+    </main>
 </div>
-</main>
-</div>
-
-<!-- Footer -->
-
 
 <!-- Jquery Core Js -->
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const dropdown = document.getElementById('cabang_olahraga');
-        const mitraBox = document.getElementById('mitra-baru-box');
+        const caborSelect = document.getElementById('cabang_olahraga');
+        const namaMitraBaruContainer = document.getElementById('nama_mitra_baru_container');
+        const namaMitraBaruInput = document.getElementById('nama_mitra_baru');
 
-        function toggleMitraBox() {
-            if (dropdown.value === 'lainnya') {
-                mitraBox.style.display = 'block';
+        function toggleNamaMitraBaru() {
+            if (caborSelect.value === 'lainnya') {
+                namaMitraBaruContainer.style.display = 'block';
+                namaMitraBaruInput.setAttribute('required', 'required');
             } else {
-                mitraBox.style.display = 'none';
+                namaMitraBaruContainer.style.display = 'none';
+                namaMitraBaruInput.removeAttribute('required');
+                namaMitraBaruInput.value = '';
             }
         }
 
-        // Panggil saat load pertama (kalau data lama user udah pilih "lainnya")
-        toggleMitraBox();
-
-        // Tambahkan listener saat dropdown berubah
-        dropdown.addEventListener('change', toggleMitraBox);
+        caborSelect.addEventListener('change', toggleNamaMitraBaru);
+        toggleNamaMitraBaru();
     });
 </script>
-
-
 
 <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
 <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>

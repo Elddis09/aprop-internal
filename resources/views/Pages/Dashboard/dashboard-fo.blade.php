@@ -2,24 +2,18 @@
 
 @section('content')
 
-
-
-
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30">
-            <img src="{{ asset('assets/images/logo.svg') }}" width="48" height="48" alt="Alpino">
+            <!-- <img src="{{ asset('assets/images/logo.png') }}" width="48" height="48" alt="APROP"> -->
         </div>
         <p>Please wait...</p>
     </div>
 </div>
 
 <div class="d-flex">
-    <!-- Sidebar -->
     @include('Layouts.sidebar')
-
-    <!-- Main Content -->
     <main class="content flex-grow-1 p-3">
         <div class="container-fluid">
             <div class="block-header">
@@ -44,53 +38,90 @@
                 </div>
             </div>
 
-            <div class="row clearfix">
+            <h6 class="mb-3 text-black">Statistik Global Sistem</h6>
+
+            <div class="row clearfix five-col-grid">
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
-                            <p class="m-b-20"><i class="zmdi zmdi-folder-star-alt zmdi-hc-3x col-amber"></i></p>
-                            <span>Total Pengajuan Proposal</span>
-                            <h3 class="m-b-10">{{$total}}</h3>
+                            <p class="m-b-20"><i class="zmdi zmdi-collection-bookmark zmdi-hc-3x col-purple"></i></p>
+                            <span>Total Proposal Sistem</span>
+                            <h3 class="m-b-10">{{ $totalProposalSistem }}</h3>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-refresh-sync zmdi-hc-3x col-blue"></i></p>
-                            <span>Dalam Peninjauan</span>
-                            <h3 class="m-b-10">{{$ditinjau}}</h3>
+                            <span>Dalam Proses (Global)</span>
+                            <h3 class="m-b-10">{{ $dalamProsesSistem }}</h3>
                         </div>
                     </div>
                 </div>
-
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-alert-circle zmdi-hc-3x col-orange"></i></p>
+                            <span>Pending (Global)</span>
+                            <h3 class="m-b-10">{{ $pendingSistem }}</h3>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-check-circle zmdi-hc-3x col-green"></i></p>
-                            <span>Disetujui</span>
-                            <h3 class="m-b-10">{{$disetujui}}</h3>
+                            <span>Disetujui (Final)</span>
+                            <h3 class="m-b-10">{{ $disetujuiSistem }}</h3>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-block zmdi-hc-3x col-red"></i></p>
-                            <span>Ditolak</span>
-                            <h3 class="m-b-10">{{$ditolak}}</h3>
+                            <span>Ditolak (Final)</span>
+                            <h3 class="m-b-10">{{ $ditolakSistem }}</h3>
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <h6 class="mb-3 mt-4 text-black">Statistik Spesifik Front Office</h6>
+            <div class="row clearfix">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-notifications-active zmdi-hc-3x col-info"></i></p>
+                            <span>Kotak Masuk (Di Posisi Saya)</span>
+                            <h3 class="m-b-10">{{ $kotakMasukFo }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-mail-send zmdi-hc-3x col-teal"></i></p>
+                            <span>Diajukan & Diproses (Oleh Saya)</span>
+                            <h3 class="m-b-10">{{ $dalamProsesOlehFO }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-check-all zmdi-hc-3x col-deep-purple"></i></p>
+                            <span>Selesai (Diajukan Oleh Saya)</span>
+                            <h3 class="m-b-10">{{ $proposalSelesaiDiajukanFO }}</h3>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 </div>
 
-<!-- Footer -->
 
 <!-- Jquery Core Js -->
 <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
@@ -107,5 +138,4 @@
 </body>
 
 </html>
-
 @endsection

@@ -2,49 +2,19 @@
 
 @section('content')
 
-<style>
-    body {
-        background-color: #ffffff;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .btn-daftar {
-        background-color: #003c91;
-        height: 40px;
-        color: #fff;
-        border-radius: 50px;
-        border-color: #fff;
-    }
-
-    .btn-daftar:hover {
-        background-color: #ffff;
-        color: #003c91;
-        border-color: #003c91;
-    }
-
-    .register-box {
-        border: 1px solid #003c91;
-        padding: 40px;
-        border-radius: 5px;
-        background-color: #fff;
-    }
-
-    .form-control {
-        border-radius: 10px;
-    }
-</style>
+<div id="app-content-wrapper">
 
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30">
-            <img src="{{ asset('assets/images/logo.png') }}" width="48" height="48" alt="Alpino">
+            <!-- <img src="{{ asset('assets/images/logo.png') }}" width="48" height="48" alt="APROP"> -->
         </div>
         <p>Please wait...</p>
     </div>
 </div>
 
-<div class="container my-5">
+<div class="container  my-5">
     <div class="row align-items-center">
         @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -87,6 +57,7 @@
             <img src="{{ asset('assets/images/login.png') }}" alt="Ilustrasi" class="img-fluid" style="max-height: 400px;">
         </div>
     </div>
+</div>
 </div>
 
 <!-- Footer -->

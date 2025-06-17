@@ -12,8 +12,15 @@ class ProposalTrack extends Model
     protected $fillable = [
         'proposal_id',
         'status_label',
-        'actor',
-        // 'file_attachment',
+        'actor_id',
+        'from_position',
+        'to_position',
+        'keterangan',
+        'is_current',
+    ];
+
+    protected $casts = [
+        'is_current' => 'boolean',
     ];
 
     // Relasi ke Proposal
@@ -21,6 +28,8 @@ class ProposalTrack extends Model
     {
         return $this->belongsTo(Proposal::class);
     }
-
-
+    public function actorUser()
+    {
+        return $this->belongsTo(User::class, 'actor_id');
+    }
 }

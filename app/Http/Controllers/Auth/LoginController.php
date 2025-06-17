@@ -28,7 +28,7 @@ class LoginController extends Controller
             $role = strtolower($user->role);
 
             if ($role === 'frontoffice') {
-                return redirect('/dashboard-klien');
+                return redirect('/dashboard-fo');
             } else {
                 return redirect('/dashboard-admin');
             }

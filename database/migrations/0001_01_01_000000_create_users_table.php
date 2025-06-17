@@ -14,13 +14,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password');
-            $table->string('role')->default('klien');
-            $table->string('no_telepon')->nullable();  // Kolom untuk nomor telepon
-            $table->string('jabatan')->nullable();     // Kolom untuk jabatan
-            $table->text('alamat')->nullable();        // Kolom untuk alamat
-            $table->string('kota')->nullable();        // Kolom untuk kota
-            $table->string('cabor_id')->nullable(); // Mengubah cabor_id menjadi string
-            $table->string('cabor_type')->default('api');
+            $table->string('role')->default('frontoffice');
             $table->rememberToken(); // penting untuk auth
             $table->timestamps();
         });
@@ -46,9 +40,5 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
-
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('cabor_id');
-        });
     }
 };

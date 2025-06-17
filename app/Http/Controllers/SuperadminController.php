@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proposal;
+use App\Models\ProposalTrack;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,12 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class SuperadminController extends Controller
 {
+    // FORM LOGIN
     public function loginForm()
     {
         return view('auth.login');
     }
 
-    // Proses login superadmin
+    // PROSES LOGIN
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -24,41 +26,71 @@ class SuperadminController extends Controller
             'password' => 'required',
         ]);
 
-        // Tambahkan cek role = superadmin
         if (Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password'], 'role' => 'superadmin'])) {
             $request->session()->regenerate();
 
             return redirect('/dashboard-admin')->with('success', 'Berhasil masuk dashboard.');
         }
 
-
         return back()->withErrors([
             'username' => 'Login gagal. Username atau password salah',
         ]);
     }
 
-    // Dashboard Superadmin
+    // DASHBOARD
     public function dashboard()
     {
         $user = Auth::user();
-        $proposals = Proposal::all();
+        $userRole = strtolower($user->role);
 
-        $total = Proposal::count();
-        $perluTindakan = Proposal::where('status', 'diterima')->count();
-        $dalamProses = Proposal::where('status', 'diproses')->count();
-        $diterima = Proposal::where('status', 'diterima')->count();
-        $disetujui = Proposal::where('status', 'disetujui')->count();
-        $ditolak = Proposal::where('status', 'ditolak')->count();
+        // --- Statistik GLOBAL (Seluruh Sistem) ---
+        $totalProposalSistem = Proposal::count();
+        $disetujuiSistem = Proposal::where('status', 'selesai')->where('is_finished', true)->count();
+        $ditolakSistem = Proposal::where('status', 'ditolak')->where('is_finished', true)->count();
+        $dalamProsesSistem = Proposal::whereNotIn('status', ['selesai', 'ditolak'])->count();
+        $pendingSistem = Proposal::where('status', 'pending')->count();
+        $selesaiSistem = Proposal::where('status', 'selesai')->count(); // Total yang sudah berakhir (disetujui/ditolak final)
 
+        $kotakMasukRoleSaatIni = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
+            $query->where('to_position', $userRole);
+        })
+            ->whereIn('status', ['diterima'])
+            ->count();
 
-        return view('Pages.dashboard-admin', compact('total', 'perluTindakan', 'dalamProses', 'disetujui', 'ditolak', 'diterima'));
+        $dalamProsesOlehRoleIni = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
+            $query->where('to_position', $userRole);
+        })
+            ->where('status', 'diproses') // Hanya status 'diproses'
+            ->count();
+        $pendingOlehRoleIni = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
+            $query->where('to_position', $userRole);
+        })
+            ->where('status', 'pending') // Spesifik untuk status 'pending'
+            ->count();
+        $disetujuiOlehRoleIni = ProposalTrack::where('actor_id', $user->id)
+            ->where('status_label', 'like', '%Disetujui%') // Menangkap 'Proposal Disetujui' atau 'Proposal Disetujui dan Diteruskan'
+            ->count();
+
+        $ditolakOlehRoleIni = ProposalTrack::where('actor_id', $user->id)
+            ->where('status_label', 'like', '%Ditolak%') // Menangkap 'Proposal Ditolak' atau 'Proposal Ditolak Secara Final'
+            ->count();
+
+        return view('Pages.Dashboard.dashboard-admin', compact(
+            'totalProposalSistem',
+            'disetujuiSistem',
+            'ditolakSistem',
+            'dalamProsesSistem',
+            'pendingSistem',
+            'selesaiSistem',
+            'kotakMasukRoleSaatIni',
+            'dalamProsesOlehRoleIni',
+            'pendingOlehRoleIni',
+            'disetujuiOlehRoleIni',
+            'ditolakOlehRoleIni'
+        ));
     }
 
-
-
-
-
-    // Logout
+    // LOGOUT
     public function logout(Request $request)
     {
         Auth::logout();
@@ -70,6 +102,7 @@ class SuperadminController extends Controller
         return redirect('/login');
     }
 
+    // FORM CREATE USER
     public function create()
     {
 
@@ -77,9 +110,10 @@ class SuperadminController extends Controller
             abort(403, 'Unauthorized access.');
         }
 
-        return view('Pages.user');
+        return view('Pages.User.create-user');
     }
 
+    // PROSES CREATE USER
     public function storeUser(Request $request)
     {
         $validated = $request->validate([
@@ -87,7 +121,7 @@ class SuperadminController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:superadmin,frontoffice,backoffice,stafpimpinan,sekretarisumum,stafbinpres,binpres,sekretarisii,ketuaii,ketuaumum,keuangan,bai,klien'
+            'role' => 'required|in:superadmin,frontoffice,backoffice,stafpimpinan,sekretarisumum,stafbinpres,binpres,sekretarisdua,ketuadua,ketuaumum,keuangan,bai'
         ]);
 
         User::create([
@@ -101,12 +135,14 @@ class SuperadminController extends Controller
         return redirect()->route('superadmin.data-user')->with('success', 'User berhasil dibuat!');
     }
 
+    // DATA USER
     public function dataUser()
     {
         $users = User::all();
-        return view('Pages.data-user', compact('users'));
+        return view('Pages.User.data-user', compact('users'));
     }
 
+    // DELETE USER
     public function deleteUser($id)
     {
         if (auth()->user()->role !== 'superadmin') {

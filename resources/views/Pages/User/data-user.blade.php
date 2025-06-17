@@ -6,7 +6,7 @@
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30">
-            <img src="{{ asset('assets/images/logo.svg') }}" width="48" height="48" alt="Alpino">
+            <!-- <img src="{{ asset('assets/images/logo.png') }}" width="48" height="48" alt="APROP"> -->
         </div>
         <p>Please wait...</p>
     </div>
@@ -24,7 +24,9 @@
                     <div class="col-lg-5 col-md-5 col-sm-12">
 
                         @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
+                        <div class="alert alert-success mx-3 mt-3">
+                            {{ session('success') }}
+                        </div>
                         @endif
 
                         <h2>Rekapitulasi Proposal</h2>
@@ -32,7 +34,7 @@
                             <li class="breadcrumb-item">
                                 <a href="index.html"><i class="zmdi zmdi-home"></i></a>
                             </li>
-                            <li class="breadcrumb-item active">Data Proposal</li>
+                            <li class="breadcrumb-item active">Data User</li>
                         </ul>
                     </div>
                     <div class="col-lg-7 col-md-7 col-sm-12">
@@ -50,45 +52,53 @@
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="card">
                         <div class="header">
-                            <h2><strong>List Proposal</strong> <small>Berikut adalah seluruh data proposal yang telah diajukan.</small> </h2>
+                            <h2><strong>List User</strong> <small>Berikut adalah seluruh data user yang telah terdaftar.</small> </h2>
+                        </div>
+                        <div class="mb-3 text-right">
+                            <a href="{{ route('superadmin.user.create') }}" class="btn btn-primary">
+                                <i class="zmdi zmdi-plus"></i> Tambah User
+                            </a>
                         </div>
                         <div class="body table-responsive">
+
+
                             <table class="table m-b-0">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Judul Proposal</th>
-                                        <th>Pengaju</th>
-                                        <th>Cabang Olahraga</th>
-                                        <th>Tanggal Pengajuan</th>
-                                        <th>Status Proposal</th>
+                                        <th>Id User</th>
+                                        <th>Nama</th>
+                                        <th>Email</th>
+                                        <th>Username</th>
+                                        <th>Role</th>
+
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($proposals as $proposal)
+                                    @forelse ($users as $user)
                                     <tr>
                                         <th scope="row">{{ $loop->iteration }}</th>
-                                        <td>{{ $proposal->judul }}</td>
-                                        <td>{{ $proposal->pengaju }}</td>
-                                        <td>{{ $proposal->cabang_olahraga }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($proposal->tgl_pengajuan)->format('d M Y') }}</td>
-                                        <td><span class="badge bg-success">{{ $proposal->status }}</span></td>
+                                        <td>{{ $user->id }}</td>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>{{ $user->username }}</td>
+                                        <td><span class="badge bg-success">{{ $user->role }}</span></td>
+
                                         <td>
-                                            <a href="{{ route('klien.proposal.show', $proposal->id) }} ">Detail</a>
-                                            @if($proposal->surat_balasan)
-                                            <a href="{{ Storage::url($proposal->surat_balasan) }}" target="_blank" >Surat Balasan</a>
-                                            @else
-                                            <a>Surat Balasan</a>
-                                            @endif
+
+                                            <form action="{{ route('superadmin.user.delete', $user->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button onclick="return confirm('Yakin ingin menghapus user ini?')" class="btn btn-sm btn-danger">Hapus</button>
+                                            </form>
                                         </td>
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="6" class="text-center">Belum ada proposal yang diajukan.</td>
+                                        <td colspan="12" class="text-center">Belum ada user yang terdaftar.</td>
                                     </tr>
                                     @endforelse
-
                                 </tbody>
                             </table>
                         </div>

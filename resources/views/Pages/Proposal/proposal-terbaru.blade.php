@@ -2,34 +2,36 @@
 
 @section('content')
 
+<!-- Page Loader -->
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30">
-            <img src="{{ asset('assets/images/logo.svg') }}" width="48" height="48" alt="Alpino">
+            <!-- <img src="{{ asset('assets/images/logo.png') }}" width="48" height="48" alt="APROP"> -->
         </div>
         <p>Please wait...</p>
     </div>
 </div>
 
 <div class="d-flex">
+    <!-- Sidebar -->
     @include('Layouts.sidebar')
-
+    <!-- Main Content -->
     <main class="content flex-grow-1 p-3">
         <div class="container-fluid">
             <div class="block-header">
                 <div class="row clearfix">
                     <div class="col-lg-5 col-md-5 col-sm-12">
-                        <h2>Rekapitulasi Proposal</h2>
+                        <h2>Proposal Terbaru (Kotak Masuk Anda)</h2>
                         <ul class="breadcrumb padding-0">
                             <li class="breadcrumb-item">
-                                <a href="index.html"><i class="zmdi zmdi-home"></i></a>
+                                <a href="{{ route('superadmin.dashboard') }}"><i class="zmdi zmdi-home"></i></a>
                             </li>
-                            <li class="breadcrumb-item active">Data Proposal</li>
+                            <li class="breadcrumb-item active">Proposal Terbaru</li>
                         </ul>
                     </div>
                     <div class="col-lg-7 col-md-7 col-sm-12">
                         <div class="input-group m-b-0">
-                            <input type="text" class="form-control" id="searchInput" placeholder="Search by No. Surat, Perihal, Cabor..." value="{{ request('search') }}">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Cari No. Surat, Perihal, Cabor..." value="{{ request('search') }}">
                             <span class="input-group-addon" id="searchButton">
                                 <i class="zmdi zmdi-search"></i>
                             </span>
@@ -42,15 +44,7 @@
                 <div class="col-lg-12 col-md-12">
                     <div class="card">
                         <div class="header">
-                            <h2><strong>Proposal</strong> list</h2>
-
-                            <ul class="header-dropdown">
-                                <li>
-                                    <a href="{{ route('proposal.export.csv') }}" class="btn btn-success btn-sm">
-                                        <i class="zmdi zmdi-download"></i> Export Csv
-                                    </a>
-                                </li>
-                            </ul>
+                            <h2><strong>Daftar</strong> Proposal Terbaru</h2>
                         </div>
                         <div class="body project_report">
                             <div class="table-responsive">
@@ -59,17 +53,15 @@
                                         <tr>
                                             <th style="width: 3%;">No</th>
                                             <th style="width: 8%;">Status</th>
-                                            <th style="width: 10%;">No surat</th> {{-- Sedikit dikurangi --}}
-                                            {{-- Header Perihal: Lebarkan width dan max-width --}}
+                                            <th style="width: 10%;">No surat</th>
                                             <th style="width: 20%; max-width: 200px; white-space: normal; word-wrap: break-word;">Perihal</th>
-                                            {{-- Header Judul: Lebarkan width dan max-width --}}
                                             <th style="width: 70%; max-width: 500px; white-space: normal; word-wrap: break-word;">Judul</th>
-                                            <th style="width: 6%;">Berupa</th> {{-- Sedikit dikurangi --}}
-                                            <th style="width: 6%;">Pengaju</th> {{-- Sedikit dikurangi --}}
-                                            <th style="width: 6%;">Cabor/Mitra</th> {{-- Sedikit dikurangi --}}
-                                            <th style="width: 7%;">Tanggal Pengajuan</th> {{-- Sedikit dikurangi --}}
-                                            <th style="width: 6%;">Petugas</th> {{-- Sedikit dikurangi --}}
-                                            <th class="text-center" style="width: 4%;">Aksi</th> {{-- Sedikit dikurangi --}}
+                                            <th style="width: 6%;">Berupa</th>
+                                            <th style="width: 6%;">Nama Pengaju</th>
+                                            <th style="width: 6%;">Cabor/Pemohon</th>
+                                            <th style="width: 7%;">Tgl Pengajuan</th>
+                                            <th style="width: 6%;">Petugas</th>
+                                            <th class="text-center" style="width: 4%;">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -82,23 +74,15 @@
                                                 @endphp
 
                                                 @if($lowerStatus == 'diterima')
-                                                <span class="badge badge-success">{{ $proposal->status }}</span>
-                                                @elseif($lowerStatus == 'diproses')
-                                                <span class="badge badge-info">{{ $proposal->status }}</span>
-                                                @elseif($lowerStatus == 'revisi')
                                                 <span class="badge badge-warning">{{ $proposal->status }}</span>
-                                                @elseif($lowerStatus == 'disetujui' || $lowerStatus == 'selesai')
-                                                <span class="badge badge-success">{{ $proposal->status }}</span>
-                                                @elseif($lowerStatus == 'ditolak')
-                                                <span class="badge badge-danger">{{ $proposal->status }}</span>
-                                                @else
-                                                <span class="badge badge-secondary">{{ $proposal->status }}</span>
+                                                @elseif($lowerStatus == 'pending')
+                                                <span class="badge badge-warning">{{ $proposal->status }}</span>
+                                                <span class="badge badge-info">{{ $proposal->status }}</span>
                                                 @endif
                                             </td>
+
                                             <td>{{ $proposal->no_surat }}</td>
-                                            {{-- Sel Perihal: Min-height untuk 2 baris, lebar disesuaikan --}}
                                             <td style="white-space: normal; word-wrap: break-word; font-size: 0.875rem; line-height: 1.4; min-height: 2.8em; vertical-align: top;">{{ $proposal->perihal }}</td>
-                                            {{-- Sel Judul: Min-height untuk 2 baris, lebar disesuaikan --}}
                                             <td class="project-title" style="white-space: normal; word-wrap: break-word; font-size: 0.875rem; line-height: 1.4; min-height: 2.8em; vertical-align: top;">
                                                 <h6 style="margin-bottom: 0;">
                                                     <a href="{{ route('superadmin.proposal.show', $proposal->id) }}" style="display: block; white-space: normal; word-wrap: break-word;">
@@ -108,7 +92,13 @@
                                             </td>
                                             <td>{{$proposal->jenis_berkas}}</td>
                                             <td>{{ $proposal->pengaju }}</td>
-                                            <td>{{ $proposal->nama_cabor }}</td>
+                                            <td>
+                                                @if($proposal->mitra)
+                                                {{ strtoupper($proposal->mitra->nama) }}
+                                                @else
+                                                {{ strtoupper($proposal->nama_cabor) }}
+                                                @endif
+                                            </td>
                                             <td>
                                                 {{ \Carbon\Carbon::parse($proposal->tgl_pengajuan)->format('d M Y') }}
                                             </td>
@@ -123,7 +113,7 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td colspan="11" class="text-center">Tidak ada data proposal</td>
+                                            <td colspan="12" class="text-center">Tidak ada proposal baru di kotak masuk Anda.</td>
                                         </tr>
                                         @endforelse
                                     </tbody>

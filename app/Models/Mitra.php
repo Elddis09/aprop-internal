@@ -10,4 +10,9 @@ class Mitra extends Model
     use HasFactory;
 
     protected $fillable = ['nama', 'tipe'];
+
+    public function proposals()
+    {
+        return $this->hasMany(Proposal::class);
+    }
 }

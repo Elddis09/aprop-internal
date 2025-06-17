@@ -28,8 +28,77 @@ class UserSeeder extends Seeder
                 'password' => '123456',
                 'role' => 'frontoffice',
             ],
+            [
+                'name' => 'Back Office',
+                'email' => 'backOffice@example.com',
+                'username' => 'back_office',
+                'password' => '123456',
+                'role' => 'backoffice',
+            ],
+            [
+                'name' => 'Staf Pimpinan',
+                'email' => 'stafpimpinan@example.com',
+                'username' => 'staf_pimpinan',
+                'password' => '123456',
+                'role' => 'stafpimpinan',
+            ],
+            [
+                'name' => 'Sekretaris Umum',
+                'email' => 'sekretarisumum@example.com',
+                'username' => 'sekum',
+                'password' => '123456',
+                'role' => 'sekretarisumum',
+            ],
+            [
+                'name' => 'Staf Binpres',
+                'email' => 'stafbinpres@example.com',
+                'username' => 'staf_binpres',
+                'password' => '123456',
+                'role' => 'stafbinpres',
+            ],
+            [
+                'name' => 'Binpres',
+                'email' => 'binpres@example.com',
+                'username' => 'binpres',
+                'password' => '123456',
+                'role' => 'binpres',
+            ],
+            [
+                'name' => 'Sekretaris II',
+                'email' => 'sekretarisdua@example.com',
+                'username' => 'sekretaris_dua',
+                'password' => '123456',
+                'role' => 'sekretarisdua',
+            ],
+            [
+                'name' => 'Ketua II',
+                'email' => 'ketuadua@example.com',
+                'username' => 'ketua_dua',
+                'password' => '123456',
+                'role' => 'ketuadua',
+            ],
+            [
+                'name' => 'Ketua Umum',
+                'email' => 'ketuaumum@example.com',
+                'username' => 'ketum',
+                'password' => '123456',
+                'role' => 'ketuaumum',
+            ],
+            [
+                'name' => 'Keuangan',
+                'email' => 'keuangan@example.com',
+                'username' => 'keuangan',
+                'password' => '123456',
+                'role' => 'keuangan',
+            ],
+            [
+                'name' => 'BAI',
+                'email' => 'bai@example.com',
+                'username' => 'bai',
+                'password' => '123456',
+                'role' => 'bai',
+            ],
 
-            // Tambahkan user lainnya sesuai kebutuhan
         ];
 
         foreach ($users as $userData) {

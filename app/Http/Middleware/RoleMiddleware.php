@@ -20,8 +20,8 @@ class RoleMiddleware
             abort(403, 'Access Denied');
         }
 
-        $userRole = strtolower(Auth::user()->role); // pastikan lowercase
-        $allowedRoles = array_map('strtolower', $roles); // convert argumen ke lowercase
+        $userRole = strtolower(Auth::user()->role);
+        $allowedRoles = array_map('strtolower', $roles);
 
         if (!in_array($userRole, $allowedRoles)) {
             abort(403, 'Access Denied');

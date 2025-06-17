@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('proposal_tracks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('proposal_id')->constrained()->onDelete('cascade'); // Link ke tabel proposals
-            $table->string('status_label'); // Contoh: "Proposal Telah Diterima"
-            $table->string('position')->nullable(); // Posisi atau jabatan yang update status
-            $table->string('keterangan')->nullable(); // Catatan tambahan
-            $table->string('actor')->nullable(); // Contoh: "Front Office KONI"
-            $table->string('file_attachment')->nullable(); // Path file terkait status
-            $table->string('file_disposisi')->nullable(); // File disposisi terkait
-            $table->timestamps(); // created_at dan updated_at
+            $table->foreignId('proposal_id')->constrained()->onDelete('cascade');
+            $table->foreignId('actor_id')
+                ->nullable()           
+                ->constrained('users') 
+                ->onDelete('set null');
+            $table->string('status_label');
+            $table->string('from_position')->nullable();
+            $table->string('to_position')->nullable();
+            $table->text('keterangan')->nullable();
+            $table->boolean('is_current')->default(false);
+            $table->timestamps();
         });
     }
 
@@ -31,7 +34,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('proposal_tracks', function (Blueprint $table) {
-            $table->dropColumn(['position', 'keterangan', 'file_disposisi']);
+            $table->dropForeign(['proposal_id']);
+            $table->dropForeign(['actor_id']);
         });
+      
+        Schema::dropIfExists('proposal_tracks');
     }
 };
