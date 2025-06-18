@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('perihal');
             $table->string('pengaju');
             $table->string('jabatan');
-            $table->string('ringkasan_berkas');
-            $table->string('tujuan_berkas');
+            // $table->string('ringkasan_berkas');
+            // $table->string('tujuan_berkas');
             $table->string('cabang_olahraga')->nullable();
             $table->foreignId('mitra_id')->nullable()->constrained('mitras')->onDelete('set null');
             $table->string('no_telepon');

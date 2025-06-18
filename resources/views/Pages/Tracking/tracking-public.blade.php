@@ -40,14 +40,17 @@
                         <hr>
 
                         <h5 class="fw-bold mt-4 mb-3">Informasi Berkas</h5>
-                        <p><strong>Judul Berkas:</strong> {{ $proposal->judul_berkas }}</p>
-                        <p><strong>Tanggal Pengajuan:</strong> {{ \Carbon\Carbon::parse($proposal->tgl_pengajuan)->format('d M Y') }}</p>
-                        <p><strong>Tujuan Berkas:</strong> {{ $proposal->tujuan_berkas }}</p>
-                        <p><strong>Status :</strong> {{ $proposal->status }}</p>
+                        
                         <p><strong>No Surat:</strong> {{ $proposal->no_surat }}</p>
-                        <p><strong>Perihal:</strong> {{ $proposal->perihal }}</p> {{-- Menambahkan perihal --}}
-                        <p><strong>Ringkasan Berkas:</strong> {{ $proposal->ringkasan_berkas }}</p>
+                        <p><strong>Judul Berkas:</strong> {{ $proposal->judul_berkas }}</p>
+                        
+                        <p><strong>Perihal:</strong> {{ $proposal->perihal }}</p> 
+                        
                         <p><strong>Jenis Berkas:</strong> {{ $proposal->jenis_berkas }}</p>
+                        <p><strong>Tanggal Pengajuan:</strong> {{ \Carbon\Carbon::parse($proposal->tgl_pengajuan)->format('d M Y') }}</p>
+                        <!-- <p><strong>Tujuan Berkas:</strong> {{ $proposal->tujuan_berkas }}</p> -->
+                        <p><strong>Status :</strong> {{ $proposal->status }}</p>
+                        <!-- <p><strong>Ringkasan Berkas:</strong> {{ $proposal->ringkasan_berkas }}</p> -->
 
                         <h5 class="fw-bold mt-4 mb-3">Lampiran Utama</h5>
                         <p><strong>File Utama:</strong>

@@ -121,8 +121,8 @@ class ProposalController extends Controller
             'perihal' => 'required|string|max:255',
             'jenis_berkas' => 'required|array',
             'jenis_berkas.*' => 'in:surat,proposal,barang',
-            'ringkasan_berkas' => 'required|string',
-            'tujuan_berkas' => 'required|string',
+            // 'ringkasan_berkas' => 'required|string',
+            // 'tujuan_berkas' => 'required|string',
             'cabang_olahraga' => 'required|string',
             'no_telepon' => 'required|string|max:20',
             'email' => 'required|email|max:255',
@@ -226,8 +226,8 @@ class ProposalController extends Controller
             'pengaju' => $validatedData['pengaju'],
             'no_surat' => $validatedData['no_surat'],
             'perihal' => $validatedData['perihal'],
-            'ringkasan_berkas' => $validatedData['ringkasan_berkas'],
-            'tujuan_berkas' => $validatedData['tujuan_berkas'],
+            // 'ringkasan_berkas' => $validatedData['ringkasan_berkas'],
+            // 'tujuan_berkas' => $validatedData['tujuan_berkas'],
             'cabang_olahraga' => $cabangOlahragaForProposal,
             'no_telepon' => $validatedData['no_telepon'],
             'email' => $validatedData['email'],
@@ -273,7 +273,7 @@ class ProposalController extends Controller
         $currentTrack = $proposal->currentTrack; // Dapatkan track terakhir yang aktif
 
         // --- Logika Akses Proposal (Akses ditolak jika tidak memiliki izin) ---
-        if ($userRole !== 'superadmin') {
+        if ($userRole !== 'superadmin'&& $userRole !== 'ketuaumum') {
             $hasAccess = false;
 
             // Kondisi 1: Proposal saat ini berada di posisi user

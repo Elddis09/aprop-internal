@@ -157,12 +157,12 @@ use App\Models\Mitra;
                                                 <input type="text" name="judul_berkas" class="form-control" placeholder="Judul Berkas">
                                             </div>
 
-                                            <div class="mb-3">
+                                            <!-- <div class="mb-3">
                                                 <input type="text" name="tujuan_berkas" class="form-control" placeholder="Tujuan Berkas">
                                             </div>
                                             <div class="mb-3">
                                                 <textarea name="ringkasan_berkas" class="form-control" placeholder="Ringkasan Berkas" rows="4"></textarea>
-                                            </div>
+                                            </div> -->
                                             <div class="mb-3">
                                                 <label>Tanggal Pengajuan</label>
                                                 <input type="date" name="tgl_pengajuan" min="{{ \Carbon\Carbon::now()->toDateString() }}" class="form-control">
