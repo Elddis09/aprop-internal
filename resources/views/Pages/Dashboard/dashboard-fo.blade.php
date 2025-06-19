@@ -2,12 +2,10 @@
 
 @section('content')
 
-<!-- Page Loader -->
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30">
-            <!-- <img src="{{ asset('assets/images/logo.png') }}" width="48" height="48" alt="APROP"> -->
-        </div>
+            </div>
         <p>Please wait...</p>
     </div>
 </div>
@@ -22,7 +20,7 @@
                         <h2>Rekapitulasi Proposal</h2>
                         <ul class="breadcrumb padding-0">
                             <li class="breadcrumb-item">
-                                <a href="index.html"><i class="zmdi zmdi-home"></i></a>
+                                <a href="{{ route('superadmin.dashboard') }}"><i class="zmdi zmdi-home"></i></a>
                             </li>
                             <li class="breadcrumb-item active">Dashboard</li>
                         </ul>
@@ -38,9 +36,16 @@
                 </div>
             </div>
 
+            @php
+            $rolesWithoutGlobalStats = ['stafpimpinan', 'stafbinpres', 'sekretarisdua', 'ketuadua', 'keuangan', 'bai'];
+            $currentUserRole = strtolower(Auth::user()->role);
+            @endphp
+
+            @if(!in_array($currentUserRole, $rolesWithoutGlobalStats))
             <h6 class="mb-3 text-black">Statistik Global Sistem</h6>
 
-            <div class="row clearfix five-col-grid">
+            {{-- Baris Pertama Statistik Global (4 Card) --}}
+            <div class="row clearfix">
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
@@ -71,6 +76,19 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-alert-triangle zmdi-hc-3x col-red"></i></p>
+                            <span>Canceled (Global)</span>
+                            <h3 class="m-b-10">{{ $cancelSistem }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div> {{-- Tutup row pertama Statistik Global --}}
+
+            {{-- Baris Kedua Statistik Global (2 Card) --}}
+            <div class="row clearfix mt-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-check-circle zmdi-hc-3x col-green"></i></p>
                             <span>Disetujui (Final)</span>
                             <h3 class="m-b-10">{{ $disetujuiSistem }}</h3>
@@ -86,9 +104,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> {{-- Tutup row kedua Statistik Global --}}
+            @endif
 
             <h6 class="mb-3 mt-4 text-black">Statistik Spesifik Front Office</h6>
+
+            {{-- Baris Pertama Statistik Spesifik FO (4 Card) --}}
             <div class="row clearfix">
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
@@ -103,7 +124,7 @@
                     <div class="card text-center">
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-mail-send zmdi-hc-3x col-teal"></i></p>
-                            <span>Diajukan & Diproses (Oleh Saya)</span>
+                            <span>Diproses (Oleh Saya)</span>
                             <h3 class="m-b-10">{{ $dalamProsesOlehFO }}</h3>
                         </div>
                     </div>
@@ -117,13 +138,27 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-alert-triangle zmdi-hc-3x col-red"></i></p>
+                            <span>Canceled (Oleh Saya)</span>
+                            <h3 class="m-b-10">{{ $proposalCancelFO }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div> {{-- Tutup row pertama Statistik Spesifik FO --}}
+
+            {{-- Karena Anda hanya memiliki 4 card di statistik FO, maka hanya ada satu baris untuk 4 card tersebut.
+                 Jika Anda ingin baris kedua dengan 2 card (seperti di global), Anda harus memiliki total 6 card juga di FO,
+                 atau menyesuaikan $col-lg-X di baris kedua.
+                 Dengan 4 card, ini sudah pas 1 baris 4. --}}
+
         </div>
     </main>
 </div>
 
 
-<!-- Jquery Core Js -->
 <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
 <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
 <script src="{{ asset('assets/bundles/knob.bundle.js') }}"></script>

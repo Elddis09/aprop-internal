@@ -47,14 +47,23 @@ class SuperadminController extends Controller
         $totalProposalSistem = Proposal::count();
         $disetujuiSistem = Proposal::where('status', 'selesai')->where('is_finished', true)->count();
         $ditolakSistem = Proposal::where('status', 'ditolak')->where('is_finished', true)->count();
-        $dalamProsesSistem = Proposal::whereNotIn('status', ['selesai', 'ditolak'])->count();
+        $dalamProsesSistem = Proposal::where(function ($query) {
+            $query->where('status', '!=', 'selesai')
+                ->orWhere('is_finished', false);
+        })
+            ->where('status', '!=', 'ditolak')
+            ->where('status', '!=', 'cancel')
+            ->where('status', '!=', 'pending')
+            ->count();
         $pendingSistem = Proposal::where('status', 'pending')->count();
+        $cancelSistem = Proposal::where('status', 'cancel')->count();
         $selesaiSistem = Proposal::where('status', 'selesai')->count(); // Total yang sudah berakhir (disetujui/ditolak final)
 
         $kotakMasukRoleSaatIni = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
             $query->where('to_position', $userRole);
         })
-            ->whereIn('status', ['diterima'])
+            ->whereIn('status', ['diterima', 'diproses', 'disetujui']) // <--- Ubah di sini
+            ->where('is_finished', false)
             ->count();
 
         $dalamProsesOlehRoleIni = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
@@ -74,6 +83,9 @@ class SuperadminController extends Controller
         $ditolakOlehRoleIni = ProposalTrack::where('actor_id', $user->id)
             ->where('status_label', 'like', '%Ditolak%') // Menangkap 'Proposal Ditolak' atau 'Proposal Ditolak Secara Final'
             ->count();
+        $dicancelOlehRoleIni = ProposalTrack::where('actor_id', $user->id)
+            ->where('status_label', 'like', '%cancel%') // Menangkap 'Proposal Ditolak' atau 'Proposal Ditolak Secara Final'
+            ->count();
 
         return view('Pages.Dashboard.dashboard-admin', compact(
             'totalProposalSistem',
@@ -86,7 +98,9 @@ class SuperadminController extends Controller
             'dalamProsesOlehRoleIni',
             'pendingOlehRoleIni',
             'disetujuiOlehRoleIni',
-            'ditolakOlehRoleIni'
+            'ditolakOlehRoleIni',
+            'dicancelOlehRoleIni',
+            'cancelSistem'
         ));
     }
 

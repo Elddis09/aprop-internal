@@ -87,6 +87,8 @@
                                                 @elseif($lowerStatus == 'pending')
                                                 <span class="badge badge-warning">{{ $proposal->status }}</span>
                                                 @elseif($lowerStatus == 'ditolak')
+                                                <span class="badge badge-warning">{{ $proposal->status }}</span>
+                                                @elseif($lowerStatus == 'cancel')
                                                 <span class="badge badge-danger">{{ $proposal->status }}</span>
                                                 @elseif($lowerStatus == 'selesai')
                                                 <span class="badge badge-success">{{ $proposal->status }}</span>
@@ -95,10 +97,19 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($proposal->currentTrack)
+                                                @if($proposal->is_finished && $proposal->currentTrack)
+                                                {{-- Jika proposal sudah final, cek apakah to_position null. Jika ya, tampilkan from_position. --}}
+                                                @if($proposal->currentTrack->to_position === null)
+                                                <span class="text-dark"><strong>{{ ucfirst($proposal->currentTrack->from_position) }}</strong></span>
+                                                @else
+                                                {{-- Ini untuk kasus final tapi to_position tidak null (misal: disetujui tapi masih ada target posisi yang sebenarnya tidak relevan) --}}
+                                                <span class="text-dark"><strong>{{ ucfirst($proposal->currentTrack->to_position) }}</strong></span>
+                                                @endif
+                                                @elseif($proposal->currentTrack)
+                                                {{-- Jika belum final, tampilkan to_position seperti biasa --}}
                                                 <span class="text-dark"><strong>{{ ucfirst($proposal->currentTrack->to_position) }}</strong></span>
                                                 @else
-                                                <span class="badge badge-danger text-dark">Belum dalam proses</span>
+                                                <span class="badge badge-danger text-dark">Belum dalam proses / Status Awal</span>
                                                 @endif
                                             </td>
                                             <td>{{ $proposal->no_surat }}</td>

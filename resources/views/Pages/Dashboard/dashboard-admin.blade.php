@@ -2,20 +2,16 @@
 
 @section('content')
 
-<!-- Page Loader -->
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30">
-            <!-- <img src="{{ asset('assets/images/logo.png') }}" width="48" height="48" alt="APROP"> -->
-        </div>
+            </div>
         <p>Please wait...</p>
     </div>
 </div>
 
 <div class="d-flex">
-    <!-- Sidebar -->
     @include('Layouts.sidebar')
-    <!-- Main Content -->
     <main class="content flex-grow-1 p-3">
         <div class="container-fluid">
             <div class="block-header">
@@ -39,16 +35,16 @@
                     </div>
                 </div>
             </div>
-            <!-- Definisikan role yang TIDAK PERLU melihat statistik global -->
             @php
             $rolesWithoutGlobalStats = ['stafpimpinan', 'stafbinpres', 'sekretarisdua', 'ketuadua', 'keuangan', 'bai'];
             $currentUserRole = strtolower(Auth::user()->role);
             @endphp
 
-            <!-- Tampilkan Statistik Global Sistem hanya jika role TIDAK termasuk dalam daftar $rolesWithoutGlobalStats -->
             @if(!in_array($currentUserRole, $rolesWithoutGlobalStats))
             <h6 class="mb-3 text-black">Statistik Global Sistem</h6>
-            <div class="row clearfix five-col-grid">
+
+            {{-- Baris Pertama (4 Card) --}}
+            <div class="row clearfix">
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
@@ -79,6 +75,19 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-alert-triangle zmdi-hc-3x col-red"></i></p>
+                            <span>Canceled (Global)</span>
+                            <h3 class="m-b-10">{{ $cancelSistem }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div> {{-- Tutup row pertama --}}
+
+            {{-- Baris Kedua (2 Card) --}}
+            <div class="row clearfix mt-4"> {{-- mt-4 untuk sedikit jarak antar baris --}}
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-check-circle zmdi-hc-3x col-green"></i></p>
                             <span>Disetujui (Final)</span>
                             <h3 class="m-b-10">{{ $disetujuiSistem }}</h3>
@@ -94,11 +103,13 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> {{-- Tutup row kedua --}}
             @endif
 
             <h6 class="mb-3 mt-4 text-black">Statistik Spesifik {{ Auth::user()->name }}</h6>
-            <div class="row clearfix five-col-grid">
+
+            {{-- Baris Pertama (4 Card) untuk Statistik Spesifik --}}
+            <div class="row clearfix">
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
@@ -129,6 +140,19 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">
                         <div class="body">
+                            <p class="m-b-20"><i class="zmdi zmdi-alert-triangle zmdi-hc-3x col-red"></i></p>
+                            <span>Canceled (Oleh Anda)</span>
+                            <h3 class="m-b-10">{{ $dicancelOlehRoleIni }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div> {{-- Tutup row pertama statistik spesifik --}}
+
+            {{-- Baris Kedua (2 Card) untuk Statistik Spesifik --}}
+            <div class="row clearfix mt-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card text-center">
+                        <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-check-all zmdi-hc-3x col-deep-purple"></i></p>
                             <span>Disetujui Oleh Anda</span>
                             <h3 class="m-b-10">{{ $disetujuiOlehRoleIni }}</h3>
@@ -144,12 +168,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> {{-- Tutup row kedua statistik spesifik --}}
+
         </div>
     </main>
 </div>
 
-<!-- Jquery Core Js -->
 <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
 <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
 

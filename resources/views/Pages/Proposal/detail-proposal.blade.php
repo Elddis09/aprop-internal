@@ -50,6 +50,7 @@
                                 <div class="col-md-6">
                                     <h5 class="fw-bold mt-4 mb-3">Informasi Pengaju</h5>
                                     <p><strong>ID Proposal:</strong> {{ $proposal->id }}</p>
+                                    <p><strong> {{ strtoupper($proposal->pengcab) }}</strong>
                                     <p><strong>Cabor/Pemohon:</strong>
                                         @if($proposal->mitra)
                                         {{ strtoupper($proposal->mitra->nama) }}
@@ -57,6 +58,7 @@
                                         {{ strtoupper($proposal->nama_cabor) }}
                                         @endif
                                     </p>
+
                                     <p><strong>Nama Pengaju:</strong> {{ $proposal->pengaju }}</p>
                                     <p><strong>Jabatan:</strong> {{ $proposal->jabatan }}</p>
                                 </div>
@@ -69,11 +71,11 @@
 
                             <hr>
 
-                            <h5 class="fw-bold mt-4 mb-3">Informasi Berkas</h5>                            
+                            <h5 class="fw-bold mt-4 mb-3">Informasi Berkas</h5>
                             <p><strong>No Surat:</strong> {{ $proposal->no_surat }}</p>
                             <p><strong>Judul Berkas:</strong> {{ $proposal->judul_berkas }}</p>
                             <p><strong>Perihal:</strong> {{ $proposal->perihal }}</p>
-                            
+
                             <p><strong>Jenis Berkas:</strong> {{ $proposal->jenis_berkas }}</p>
                             <p><strong>Tanggal Pengajuan:</strong> {{ \Carbon\Carbon::parse($proposal->tgl_pengajuan)->format('d M Y') }}</p>
                             <!-- <p><strong>Tujuan Berkas:</strong> {{ $proposal->tujuan_berkas }}</p> -->
@@ -126,6 +128,7 @@
                                         @elseif(Str::contains($track->status_label, ['Pending','Revisi','Dikembalikan'])) bg-warning
                                         @elseif(Str::contains($track->status_label, ['Disetujui','Dicairkan','Selesai'])) bg-success
                                         @elseif(Str::contains($track->status_label, 'Ditolak')) bg-danger
+                                        @elseif(Str::contains($track->status_label, 'cancel')) bg-danger
                                         @else bg-secondary
                                         @endif">
                                         <i class="zmdi zmdi-label"></i>
@@ -245,6 +248,7 @@
                             <span class="badge
                                 @if($proposal->status == 'disetujui' || $proposal->status == 'selesai') bg-success
                                 @elseif($proposal->status == 'ditolak') bg-danger
+                                @elseif($proposal->status == 'cancel') bg-danger
                                 @elseif($proposal->status == 'pending') bg-warning text-dark
                                 @elseif($proposal->status == 'diproses' || $proposal->status == 'diterima') bg-info text-dark
                                 @else bg-secondary
@@ -262,6 +266,7 @@
                             <option value="disetujui" {{ $proposal->status == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
                             <option value="ditolak" {{ $proposal->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                             <option value="pending" {{ $proposal->status == 'pending' ? 'selected' : '' }}>Pending / Dikembalikan untuk Revisi</option>
+                            <option value="cancel" {{ $proposal->status == 'cancel' ? 'selected' : '' }}>Cancel</option>
                         </select>
                     </div>
 
@@ -292,9 +297,6 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
@@ -354,6 +356,11 @@
         }
     });
 </script>
+
+<script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
+<script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
+<script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
+
 </body>
 
 </html>

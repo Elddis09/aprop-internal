@@ -21,6 +21,7 @@
                             <div class="col-md-6">
                                 <h5 class="fw-bold mt-4 mb-3">Informasi Pengaju</h5>
                                 <p><strong>ID Proposal:</strong> {{ $proposal->id }}</p>
+                                  <p><strong> {{ strtoupper($proposal->pengcab) }}</strong>
                                 <p><strong>Cabor/Pemohon:</strong> @if($proposal->mitra)
                                     {{ strtoupper($proposal->mitra->nama) }}
                                     @else

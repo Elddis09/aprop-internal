@@ -19,16 +19,15 @@ return new class extends Migration
             $table->text('jenis_berkas');
             $table->string('perihal');
             $table->string('pengaju');
+            $table->string('pengcab');
             $table->string('jabatan');
-            // $table->string('ringkasan_berkas');
-            // $table->string('tujuan_berkas');
             $table->string('cabang_olahraga')->nullable();
             $table->foreignId('mitra_id')->nullable()->constrained('mitras')->onDelete('set null');
             $table->string('no_telepon');
             $table->string('email');
             $table->text('alamat');
             $table->date('tgl_pengajuan');
-            $table->enum('status', ['disetujui', 'ditolak', 'diproses', 'diterima', 'selesai', 'pending'])->default('pending');
+            $table->enum('status', ['disetujui', 'ditolak', 'diproses', 'diterima', 'selesai', 'pending', 'cancel'])->default('pending');
             $table->boolean('is_finished')->default(false);
             $table->string('file_utama')->nullable();
             $table->string('nama_petugas');

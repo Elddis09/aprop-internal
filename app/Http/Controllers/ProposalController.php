@@ -40,6 +40,7 @@ class ProposalController extends Controller
         $proposals = $query->whereHas('tracks', function ($q) use ($userRole) {
             $q->where('to_position', $userRole);
         })
+            ->where('status', '!=', 'dibatalkan')
             ->with('mitra', 'currentTrack.actorUser')
             ->latest()
             ->get();
@@ -121,7 +122,7 @@ class ProposalController extends Controller
             'perihal' => 'required|string|max:255',
             'jenis_berkas' => 'required|array',
             'jenis_berkas.*' => 'in:surat,proposal,barang',
-            // 'ringkasan_berkas' => 'required|string',
+            'pengcab' => 'required|string|max:255',
             // 'tujuan_berkas' => 'required|string',
             'cabang_olahraga' => 'required|string',
             'no_telepon' => 'required|string|max:20',
@@ -226,7 +227,7 @@ class ProposalController extends Controller
             'pengaju' => $validatedData['pengaju'],
             'no_surat' => $validatedData['no_surat'],
             'perihal' => $validatedData['perihal'],
-            // 'ringkasan_berkas' => $validatedData['ringkasan_berkas'],
+            'pengcab' => $validatedData['pengcab'],
             // 'tujuan_berkas' => $validatedData['tujuan_berkas'],
             'cabang_olahraga' => $cabangOlahragaForProposal,
             'no_telepon' => $validatedData['no_telepon'],
@@ -273,7 +274,7 @@ class ProposalController extends Controller
         $currentTrack = $proposal->currentTrack; // Dapatkan track terakhir yang aktif
 
         // --- Logika Akses Proposal (Akses ditolak jika tidak memiliki izin) ---
-        if ($userRole !== 'superadmin'&& $userRole !== 'ketuaumum') {
+        if ($userRole !== 'superadmin' && $userRole !== 'ketuaumum') {
             $hasAccess = false;
 
             // Kondisi 1: Proposal saat ini berada di posisi user
@@ -363,7 +364,7 @@ class ProposalController extends Controller
     {
         $request->validate([
             'posisiProposal' => 'nullable|string',
-            'statusProposal' => 'required|string|in:diterima,diproses,disetujui,ditolak,pending,selesai',
+            'statusProposal' => 'required|string|in:diterima,diproses,disetujui,ditolak,pending,selesai,cancel',
             'keterangan' => 'nullable|string|max:255',
             'is_finished_action' => 'nullable|boolean',
         ]);
@@ -386,9 +387,22 @@ class ProposalController extends Controller
         $finalProposalStatusForModel = $selectedStatus; // Status default yang akan disimpan ke model Proposal
         $trackLabel = $this->getStatusLabel($selectedStatus); // Label untuk track baru
         $trackToPosition = $fromPosition; // Posisi tujuan default: tetap di posisi role saat ini
-
+        $proposal->is_finished = false;
+        if ($selectedStatus === 'cancel') {
+            $proposal->is_finished = true; // Tandai selesai
+            $finalProposalStatusForModel = 'cancel'; // Set status ke ditolak
+            $trackLabel = 'Proposal Dicancel Secara Final oleh ' . ucfirst($actorRole);
+            $keterangan = $keterangan ?? 'Proposal dibatalkan oleh ' . ucfirst($actorRole) . ' dan proses dinyatakan selesai.';
+            $trackToPosition = null; // Tidak ada penerusan lagi jika sudah selesai
+        } elseif ($selectedStatus === 'ditolak') {
+            $proposal->is_finished = true;
+            $finalProposalStatusForModel = 'ditolak';
+            $trackLabel = 'Proposal Ditolak Secara Final oleh ' . ucfirst($actorRole); // Atau label yang sesuai
+            $keterangan = $keterangan ?? 'Proposal ditolak dan proses dinyatakan selesai.';
+            $trackToPosition = null; // Tidak ada penerusan lagi jika sudah selesai
+        }
         // Case 1: Proposal ditandai selesai (tombol "Tandai Selesai" diklik)
-        if ($request->boolean('is_finished_action')) {
+        elseif ($request->boolean('is_finished_action')) {
             $proposal->is_finished = true; // Set flag is_finished menjadi true
             $trackToPosition = null; // Tidak ada penerusan lagi jika sudah selesai
 
@@ -473,6 +487,7 @@ class ProposalController extends Controller
             'diproses' => 'Proposal Sedang Diproses',
             'disetujui' => 'Proposal Disetujui',
             'ditolak' => 'Proposal Ditolak',
+            'cancel' => 'Proposal Dicancel',
             'selesai' => 'Proses Proposal Selesai',
             default => 'Status Tidak Diketahui',
         };

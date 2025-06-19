@@ -20,7 +20,7 @@ class Proposal extends Model
         'jenis_berkas',
         'no_surat',
         'perihal',
-        // 'ringkasan_berkas',
+        'pengcab',
         // 'tujuan_berkas',
         'cabang_olahraga',
         'no_telepon',

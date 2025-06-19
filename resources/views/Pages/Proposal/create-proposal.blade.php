@@ -74,7 +74,11 @@ use App\Models\Mitra;
                                                 <label for="pengaju">Nama Pengaju</label>
                                                 <input type="text" name="pengaju" class="form-control" placeholder="Pengaju Berkas">
                                             </div>
-                                            <div class="form-group mb-3">
+                                            <div class="col-12 text-muted mt-2">
+                                                <label for="pengaju">Nama Pengcab</label>
+                                                <input type="text" name="pengcab" class="form-control" placeholder="Pengcab MI">
+                                            </div>
+                                            <div class="form-group mb-3 mt-2">
                                                 <label for="cabang_olahraga" class="form-label fw-bold">Cabang Olahraga / Nama Pemohon</label>
                                                 <select name="cabang_olahraga" id="cabang_olahraga" class="form-control" required>
                                                     <option value="">Pilih Cabang Olahraga atau Pemohon</option>

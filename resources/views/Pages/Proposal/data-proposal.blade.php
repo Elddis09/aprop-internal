@@ -84,6 +84,8 @@
                                                 @elseif($lowerStatus == 'diproses')
                                                 <span class="badge badge-info">{{ $proposal->status }}</span>
                                                 @elseif($lowerStatus == 'ditolak')
+                                                <span class="badge badge-info">{{ $proposal->status }}</span>
+                                                @elseif($lowerStatus == 'cancel')
                                                 <span class="badge badge-danger">{{ $proposal->status }}</span>
                                                 @else
                                                 <span class="badge badge-warning">{{ $proposal->status }}</span>
