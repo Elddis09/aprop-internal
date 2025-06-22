@@ -761,6 +761,12 @@ body {
     font-size: 16px;
 }
 
+.form-check-label-sifat{
+  font-weight: normal;
+            font-size: 0.8em;
+            margin-bottom: 0;
+}
+
 .form-check-inline {
     padding-right: 20px;
 }
@@ -1010,3 +1016,664 @@ table.table-receipt {
         min-height: 60px !important;
     }
 }
+
+/* DISPOSISI */
+.info-border{
+    width: 1px;
+}
+
+ .card-disposisi {
+            border: 1px solid #000;
+            background-color: #fff;
+            max-width: 900px;
+            margin: auto;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border-collapse: collapse;
+            /* Ensure table borders are single */
+            width: 100%;
+        }
+
+        /* Table styles */
+        .card-disposisi table {
+            width: 100%;
+            border-collapse: collapse; /* Membantu mempertahankan lebar kolom */
+        page-break-inside: avoid; /
+        }
+
+        .card-disposisi th,
+        .card-disposisi td {
+            border: 1px solid #000;
+            padding: 5px;
+            vertical-align: top;
+            /* Align content to top by default */
+        }
+
+        .card-disposisi th {
+            font-weight: bold;
+            background-color: #f0f0f0;
+            /* Light background for headers */
+            text-align: left;
+        }
+
+        /* Header Specific Styles */
+        .header-logo {
+            text-align: center;
+            vertical-align: middle;
+            width: 5% !important;
+        }
+
+        .header-logo img {
+            max-height: 50px;
+            margin-bottom: 3px;
+            
+        }
+
+        .header-logo p {
+            font-size: 0.65em;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .header-title {
+            text-align: center;
+            vertical-align: middle;
+            width: 35%;
+        }
+
+        .header-title h3 {
+            font-weight: bold;
+            padding-top: 2rem;
+        }
+
+        .header-info-atas {
+            width: 40% !important;
+            padding: 0;
+            /* Remove default cell padding */
+        }
+
+        .header-info-item {
+            display: flex;
+            align-items: center;
+            padding: 2px 5px;
+            min-height: 30px;
+            border-bottom: 1px solid #000;
+        }
+
+        .header-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .header-info-label {
+            font-size: 0.8em;
+            font-weight: bold;
+            width: 70px;
+            flex-shrink: 0;
+        }
+
+        .header-info-value {
+            font-weight: bold;
+            font-size: 0.9em;
+            flex-grow: 1;
+            text-align: end;
+        }
+
+        /* Info Section (DARI, PERIHAL, SIFAT, No. Surat, Tgl. Surat) */
+        .info-label {
+            font-weight: bold;
+            width: 120px;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+
+        .info-field {
+            text-align: left;
+            vertical-align: middle;
+            font-size: 12px;
+        }
+
+        .sifat-options .form-check-inline {
+            margin-bottom: 5px;
+            margin-right: 1.2rem;
+            font-size: 0.8em;
+        }
+
+        .no-tgl-surat-label {
+            font-weight: bold;
+            width: 80px;
+            font-size: 10px;
+            vertical-align: middle;
+        }
+
+        .no-tgl-surat-field {
+            vertical-align: middle;
+            font-size: 10px;
+        }
+
+        /* Disposisi Area */
+        .disposisi-header-cell {
+            font-weight: bold;
+            text-align: center;
+            background-color: #f0f0f0;
+            font-size: 1.1em;
+        }
+
+        .disposisi-notes-cell {
+            min-height: 80px;
+            /* Adjust as needed for content */
+            vertical-align: top;
+            width: 25%;
+            /* Adjusted width as Diteruskan ke is now separate */
+        }
+
+        .disposisi-kelengkapan-cell {
+            min-height: 80px;
+            /* Adjust as needed for content */
+            vertical-align: top;
+            width: 25%;
+            /* Fixed width for kelengkapan */
+        }
+
+        .disposisi-diteruskan-cell {
+            min-height: 80px;
+            /* Adjust as needed for content */
+            vertical-align: top;
+            width: 25%;
+            /* Fixed width for diteruskan ke */
+        }
+
+        .disposisi-notes-cell label,
+        .disposisi-kelengkapan-cell label,
+        .disposisi-diteruskan-cell label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.85em;
+            line-height: 0.5;
+            display: block;
+            /* Ensure label takes its own line */
+        }
+
+        .disposisi-notes-cell p {
+            margin-bottom: 2px;
+            font-size: 0.85em;
+        }
+
+        .disposisi-option-group {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            padding-left: 10px;
+            line-height: 15px;
+            /* Indent for checkboxes */
+        }
+
+        .disposisi-option-group .form-check {
+            margin-bottom: 0px;
+            
+        }
+
+        .disposisi-option-group .form-check-label {
+            font-weight: normal;
+            font-size: 0.8em;
+            line-height:2;
+            
+   
+        }
+
+        /* Footer Notes Area (Sekum, Wk Sekum, Ketua, Ketum) */
+        .footer-notes-label {
+            font-weight: bold;
+            font-size: 0.8em;
+            line-height: 1.2;
+            vertical-align: bottom;
+            padding-bottom: 2px;
+        }
+
+        .footer-notes-line {
+            border-bottom: 1px dotted #555;
+            vertical-align: bottom;
+            text-align: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            padding-bottom: 2px;
+        }
+
+        /* Print Button */
+        .print-button-container {
+            text-align: center;
+        }
+.outer-wrapper {
+    position: relative; /* Ini akan menjadi referensi untuk posisi absolut tombol */
+    width: 100%; /* Pastikan mengisi lebar penuh */
+    max-width: 21.59cm; /* Lebar maksimal A4 */
+    margin: 0 auto; /* Tengah di halaman */
+    padding-top: 50px; /* Memberi ruang di atas untuk tombol */
+    box-sizing: border-box;
+}
+
+        @media print {
+            .print-button-container {
+                display: none;
+                /* Hide print button when printing */
+            }
+
+            body {
+                padding: 0;
+                /* Remove padding for print */
+                background-color: #fff;
+            }
+
+            .card-disposisi {
+                box-shadow: none;
+                /* Remove shadow for print */
+                border: none;
+                 max-height: 270mm;
+                /* Remove outer border if desired for print */
+            }
+
+            /* Adjust margins and padding for print if necessary */
+            table,
+            tr,
+            td {
+                page-break-inside: avoid;
+                /* Prevent breaking sections across pages */
+            }
+        }
+
+        /* FORM CEKLIS */
+
+
+            .form-wrapper {
+                width: 20.8cm; /* Sedikit kurang dari A4 untuk mencegah scrollbar */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                background-color: #fff;
+                padding: 10px; /* Kurangi padding wrapper untuk tampilan di layar */
+                box-sizing: border-box; /* Include padding in width */
+            }
+
+            .form-table {
+                width: 100%;
+                border-collapse: collapse; /* Remove space between cells */
+                border: 2px solid #000; /* Main border for the entire form */
+            }
+
+            .form-table td {
+                padding: 5px; /* Default padding for cells, sedikit dikurangi */
+                vertical-align: top; /* Align content to top of cell */
+                border: 1px solid #ddd; /* Subtle inner borders */
+                box-sizing: border-box; /* Include padding in cell dimensions */
+            }
+
+            /* Header Section */
+            .header-cell {
+                padding-bottom: 3px; /* Adjust padding for header */
+                border-bottom: 1px solid #000; /* Menggunakan border hitam solid untuk header */
+                vertical-align: middle;
+            }
+
+            .header-left {
+                width: 15%; /* Adjust width for logo */
+                text-align: left;
+                border-right: none; /* Remove right border */
+            }
+
+            .logo-bandung {
+                    max-width: 50px !important; /* Ukuran logo yang lebih baik */
+             height: 60px !important;
+             margin-left: 1.6rem !important;
+                }
+
+                .logo-disposisi{
+             height: 200px !important;
+                }
+
+            .header-center {
+                width: 55%; /* Adjust width for title */
+                text-align: center;
+                border-left: none; /* Remove left border */
+                border-right: none; /* Remove right border */
+            }
+
+            /* Styling untuk Catatan, Tanggal Masuk, Paraf di Header Kanan Atas */
+            .header-top-right {
+                text-align: right;
+                padding: 3px; /* Sesuaikan padding */
+                font-size: 0.75rem; /* Sedikit dikecilkan */
+                vertical-align: top; /* Pastikan rata atas */
+            }
+
+            .header-meta-top {
+                width: 15%; /* Lebar untuk Catatan */
+                border-bottom: 1px solid #000;
+            }
+
+            .header-tanggal {
+                width: 15%; /* Lebar untuk Tanggal Masuk */
+                border-bottom: 1px solid #000;
+            }
+
+            .header-paraf-cell {
+                width: 15%; /* Lebar untuk Paraf */
+                border-bottom: 1px solid #000;
+            }
+
+            .header-input-box {
+                width: 100%;
+                border: 1px solid #000;
+                padding: 1px 3px;
+                box-sizing: border-box;
+                font-size: 0.7rem; /* Sedikit dikecilkan */
+                resize: none;
+                overflow: hidden; /* Sembunyikan scrollbar jika tidak diperlukan */
+                height: 20px; /* Tinggi standar untuk input tanggal, sedikit dikurangi */
+                margin-top: 2px;
+                text-align: center;
+            }
+
+            .header-paraf-cell .header-input-box {
+                height: 30px; /* Tinggi lebih besar untuk paraf */
+            }
+            .header-catatan-input .header-input-box {
+                height: 40px; /* Tinggi lebih besar untuk catatan */
+            }
+
+            /* Data Row (DARI / PENGIRIM, PERIHAL) */
+            .data-row {
+                padding-top: 7px;
+                padding-bottom: 7px;
+                border-bottom: 1px solid #000; /* Konsisten dengan border hitam */
+            }
+
+            /* Checkbox Row (KODE PROPOSAL) */
+            .checkbox-row {
+                padding: 7px 5px;
+                border-bottom: 1px solid #000; /* Konsisten dengan border hitam */
+            }
+
+            .checkbox-row .checkbox-label {
+                margin-right: 10px; /* Space between checkboxes */
+                font-size: 0.8rem; /* Sedikit dikecilkan */
+                display: inline-flex; /* Allow vertical alignment of text and checkbox */
+                align-items: center;
+            }
+
+            .checkbox-row input[type="checkbox"] {
+                margin-right: 3px;
+                transform: scale(0.9); /* Kecilkan sedikit checkbox */
+            }
+
+            /* Section Heading (PERSYARATAN DOKUMEN PENGAJUAN) */
+            .section-heading-cell {
+                background-color: #e9ecef; /* Light grey background */
+                text-align: center;
+                font-weight: bold;
+                padding: 7px 5px;
+                border: 1px solid #000; /* Stronger border */
+                border-left: 2px solid #000; /* Sesuaikan border luar */
+                border-right: 2px solid #000; /* Sesuaikan border luar */
+                border-bottom: 2px solid #000;
+                margin-top: 7px;
+            }
+
+            /* Content Cells (Sections 1-10) */
+            .content-cell {
+                border: 1px solid #000; /* Stronger border for content boxes */
+                padding: 0; /* Remove default cell padding, use padding on inner div */
+                width: 50%; /* Each content cell takes 50% width of the table row */
+            }
+
+            .section-box {
+                padding: 10px; /* Padding inside the section box, sedikit dikurangi */
+                height: 100%; /* Ensure boxes fill their cell height */
+                box-sizing: border-box; /* Include padding in height */
+                display: flex;
+                flex-direction: column;
+            }
+
+            .section-title {
+                font-size: 0.9rem; /* Sedikit perkecil */
+                margin-bottom: 7px;
+                padding-bottom: 3px;
+                /* border-bottom: 1px dashed #999; <-- BARIS INI DIHILANGKAN/DIKOMENTARI */
+            }
+
+            .checkbox-list-item {
+                display: block; /* Each checkbox on a new line */
+                margin-bottom: 3px; /* Space between checkbox items */
+                font-size: 0.8rem; /* Sedikit perkecil */
+                line-height: 1.15; /* Lebih rapat */
+            }
+
+            .checkbox-list-item input[type="checkbox"] {
+                margin-right: 5px;
+                vertical-align: middle; /* Align checkbox with text */
+                transform: scale(0.9); /* Kecilkan sedikit checkbox */
+            }
+
+            /* Perbaikan khusus untuk border di header dan border luar tabel */
+            .header-left,
+            .header-center{
+                border-bottom: 1px solid #000 !important;
+            }
+            .header-top-right {
+                border-bottom: 1px solid #000 !important;
+                 text-align: left; 
+            }
+            .form-table > thead > tr > .header-left {
+                border-left: 2px solid #000 !important;
+            }
+            .form-table > thead > tr > .header-tanggal {
+                border-right: 2px solid #000 !important;
+            }
+            .form-table > thead > tr:nth-child(2) > .data-row {
+                border-left: 2px solid #000 !important;
+            }
+            .form-table > thead > tr:nth-child(2) > .header-paraf-cell {
+                border-right: 2px solid #000 !important;
+            }
+            .form-table > thead > tr:nth-child(3) td {
+                border-left: 2px solid #000 !important;
+                border-right: 2px solid #000 !important;
+            }
+            .form-table > thead > tr:nth-child(4) td {
+                border-left: 2px solid #000 !important;
+                border-right: 2px solid #000 !important;
+            }
+            .form-table tbody tr td:first-child {
+                border-left: 2px solid #000 !important;
+            }
+            .form-table tbody tr td:last-child {
+                border-right: 2px solid #000 !important;
+            }
+            .form-table tbody tr:last-child td {
+                border-bottom: 2px solid #000 !important;
+            }
+            .small-info{
+                text-align: start !important;
+            }
+
+            /* ========================================= */
+            /* ATURAN UNTUK PENCETAKAN (PRINT MEDIA QUERY) */
+            /* ========================================= */
+      @media print {
+                body {
+                    margin: 0;
+                    padding: 0;
+                    background-color: #fff;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                    display: block;
+                }
+                @page {
+                    /* Margin sangat minimal agar formulir mengisi hampir seluruh halaman */
+                    size: A4 portrait;
+                    margin: 0.5cm; /* Sangat kecil untuk memaksimalkan ruang */
+                }
+
+                .form-wrapper {
+                    width: calc(100vw - 1cm); /* 100vw - (2 * 0.5cm margin) */
+                    height: calc(100vh - 1cm); /* Mengisi tinggi penuh kertas */
+                    box-shadow: none;
+                    padding: 0;
+                    border: none;
+                    box-sizing: border-box; /* Pastikan padding dan border masuk perhitungan width/height */
+                }
+                .outer-wrapper {
+        width: 100vw;
+        max-width: none; /* Hilangkan max-width saat cetak */
+        padding-top: 0; /* Hilangkan padding top saat cetak */
+        margin: 0; /* Hilangkan margin auto saat cetak */
+    }
+
+                .form-table {
+                    width: 100%; /* Mengisi seluruh lebar form-wrapper */
+                    height: 100%; /* Mengisi seluruh tinggi form-wrapper */
+                    border-collapse: collapse;
+                    border: 2px solid #000 !important; /* Main border */
+                    table-layout: fixed; /* Membantu kontrol lebar kolom */
+                }
+
+                .form-table td {
+                    padding: 3px !important; /* Tingkatkan padding dari sebelumnya agar tidak terlalu kecil */
+                    font-size: 1.2em !important; /* Tingkatkan ukuran font umum untuk cetak */
+                    border: 1px solid #000 !important; /* Semua internal border 1px solid black */
+                }
+
+                .header-cell {
+                    padding-bottom: 2px !important;
+                }
+
+                .logo-bandung {
+                    max-width: 45px !important; /* Ukuran logo yang lebih baik */
+             height: 55px !important;
+             margin-left: 2.8rem !important;
+                }
+
+                .header-center .fw-bold {
+                    font-size: 1em !important; /* Ukuran font judul utama lebih besar */
+                }
+
+                .header-top-right {
+                    padding: 2px !important;
+                    font-size: 0.7rem !important;
+                    vertical-align: top !important; /* Pastikan di pojok kiri atas */
+                    text-align: left !important; /* Pastikan rata kiri */
+                }
+
+                .header-input-box {
+                    padding: 2px 3px !important;
+                    font-size: 0.65rem !important;
+                    height: 18px !important;
+                    margin-top: 2px !important;
+                }
+                .header-paraf-cell .header-input-box {
+                    height: 25px !important;
+                }
+                .header-catatan-input .header-input-box {
+                    height: 35px !important;
+                }
+
+                .data-row {
+                    padding: 5px !important;
+                    font-size: 0.75em !important;
+                }
+                .data-row-content-wrapper {
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+                    gap: 5px !important; /* Pastikan gap tetap proporsional */
+                }
+
+                .checkbox-row {
+                    padding: 5px !important;
+                }
+
+                .checkbox-row .checkbox-label {
+                    margin-right: 8px !important;
+                    font-size: 1em !important;
+                }
+                .checkbox-row input[type="checkbox"] {
+                    transform: scale(0.85) !important;
+                    margin-right: 3px !important;
+                }
+
+                .section-heading-cell {
+                    padding: 6px !important;
+                    font-size: 0.9em !important;
+                }
+
+                .section-box {
+                    padding: 8px !important;
+                    height: 100%; /* Penting: Pastikan box mengisi tinggi cell */
+                }
+
+                .section-title {
+                    font-size: 1rem !important;
+                    margin-bottom: 5px !important;
+                    padding-bottom: 2px !important;
+                }
+
+                .checkbox-list-item {
+                    margin-bottom: 2px !important;
+                    font-size: 1.2rem !important;
+                    line-height: 1.4 !important;
+                }
+                .checkbox-list-item input[type="checkbox"] {
+                    transform: scale(0.85) !important;
+                }
+
+                /* Pastikan semua border eksternal 2px dan internal 1px saat print */
+                .form-table tr:first-child td {
+                    border-top: 2px solid #000 !important;
+                }
+                .form-table tr:last-child td {
+                    border-bottom: 2px solid #000 !important;
+                }
+                .form-table td:first-child {
+                    border-left: 2px solid #000 !important;
+                }
+                .form-table td:last-child {
+                    border-right: 2px solid #000 !important;
+                }
+
+                .header-left {
+                    border-left: 2px solid #000 !important;
+                }
+                .header-paraf-cell {
+                    border-right: 2px solid #000 !important;
+                }
+                .header-cell.header-tanggal {
+                    border-right: 1px solid #000 !important;
+                }
+                .header-top-right.header-catatan-input {
+                    border-right: 1px solid #000 !important;
+                }
+                .header-center {
+                    border-right: 1px solid #000 !important;
+                }
+                .form-table tr:nth-child(2) td:first-child,
+                .form-table tr:nth-child(3) td:first-child,
+                .form-table tr:nth-child(4) td:first-child,
+                .form-table tr:nth-child(5) td:first-child {
+                    border-left: 2px solid #000 !important;
+                }
+                .form-table tr td:nth-child(1).content-cell {
+                    border-left: 2px solid #000 !important;
+                }
+
+                /* Pastikan elemen tidak terpotong di antara halaman */
+                .form-table,
+                .section-box,
+                .data-row,
+                .checkbox-row,
+                .header-cell {
+                    break-inside: avoid;
+                }
+                /* Mengatasi potensi pemisahan baris dalam label yang panjang */
+                .checkbox-list-item label {
+                    display: block; /* Ensure the label acts as a block */
+                    page-break-inside: avoid; /* Prevent breaking inside the label */
+                }
+            }
