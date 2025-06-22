@@ -123,7 +123,8 @@ class ProposalController extends Controller
             'jenis_berkas' => 'required|array',
             'jenis_berkas.*' => 'in:surat,proposal,barang',
             'pengcab' => 'required|string|max:255',
-            // 'tujuan_berkas' => 'required|string',
+            'agenda_number' => 'nullable|string|max:255',
+            'tgl_surat' => 'required|date',
             'cabang_olahraga' => 'required|string',
             'no_telepon' => 'required|string|max:20',
             'email' => 'required|email|max:255',
@@ -221,14 +222,18 @@ class ProposalController extends Controller
             $filePath = $request->file('file_utama')->store('proposals', 'public');
         }
 
+        $agendaNumber = $this->generateNextAgendaNumber();
+        Log::info('Generated Agenda Number: ' . $agendaNumber);
+
         $proposal = Proposal::create([
             'user_id' => Auth::id(),
             'judul_berkas' => $validatedData['judul_berkas'],
             'pengaju' => $validatedData['pengaju'],
             'no_surat' => $validatedData['no_surat'],
+            'tgl_surat' => $validatedData['tgl_surat'],
             'perihal' => $validatedData['perihal'],
             'pengcab' => $validatedData['pengcab'],
-            // 'tujuan_berkas' => $validatedData['tujuan_berkas'],
+            'agenda_number' => $agendaNumber,
             'cabang_olahraga' => $cabangOlahragaForProposal,
             'no_telepon' => $validatedData['no_telepon'],
             'email' => $validatedData['email'],
@@ -242,7 +247,8 @@ class ProposalController extends Controller
             'mitra_id' => $mitraId,
         ]);
 
-        Log::info('Store Method - Proposal created. ID: ' . $proposal->id . ', Cabor: ' . $proposal->cabang_olahraga . ', Mitra ID: ' . ($proposal->mitra_id ?? 'NULL'));
+        // Setelah Proposal::create([...])
+        Log::info('Store Method - Proposal created. ID: ' . $proposal->id . ', Cabor: ' . $proposal->cabang_olahraga . ', Mitra ID: ' . ($proposal->mitra_id ?? 'NULL') . ', Agenda Number: ' . ($proposal->agenda_number ?? 'NULL'));
 
 
         ProposalTrack::create([
@@ -260,7 +266,24 @@ class ProposalController extends Controller
         return redirect()->route('klien.proposal.data-proposal')->with('success', 'Proposal berhasil dikirim.');
     }
 
+    private function generateNextAgendaNumber(): string
+    {
+        // Ambil proposal terakhir berdasarkan nomor agenda tertinggi
+        $lastProposal = Proposal::whereNotNull('agenda_number')
+            ->orderByRaw('CAST(agenda_number AS UNSIGNED) DESC') // Mengurutkan sebagai angka
+            ->first();
 
+        $nextNumber = 500; // Nomor awal jika belum ada data atau data di bawah 500
+
+        if ($lastProposal && is_numeric($lastProposal->agenda_number)) {
+            $lastNumericAgenda = (int)$lastProposal->agenda_number;
+            if ($lastNumericAgenda >= 500) {
+                $nextNumber = $lastNumericAgenda + 1;
+            }
+        }
+
+        return (string) $nextNumber; // Pastikan mengembalikan string jika kolom agenda_number adalah string
+    }
     public function show(string $id)
     {
         $user = Auth::user();
@@ -526,6 +549,7 @@ class ProposalController extends Controller
             'No',
             'Status',
             'No surat',
+            'Tgl_surat',
             'Perihal',
             'Judul',
             'Berupa',
@@ -545,6 +569,7 @@ class ProposalController extends Controller
                     $i++,
                     $proposal->status,
                     $proposal->no_surat,
+                    $proposal->tgl_surat,
                     $proposal->perihal,
                     $proposal->judul_berkas,
                     $proposal->jenis_berkas,
@@ -559,5 +584,21 @@ class ProposalController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function disposisi($id)
+    {
+        $proposal = Proposal::findOrFail($id);
+        return view('Pages.Proposal.disposisi', compact('proposal'));
+    }
+    public function formCeklis($id)
+    {
+        $proposal = Proposal::findOrFail($id);
+        return view('Pages.Proposal.form-ceklis', compact('proposal'));
+    }
+    public function edit($id)
+    {
+        $proposal = Proposal::findOrFail($id);
+        return view('Pages.Proposal.update-proposal', compact('proposal'));
     }
 }
