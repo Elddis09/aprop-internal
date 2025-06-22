@@ -44,7 +44,10 @@ Route::middleware(['auth', 'role:superadmin,frontoffice,backoffice,stafpimpinan,
     Route::get('/bank-proposals', [ProposalController::class, 'bankProposals'])->name('superadmin.proposal.bank-proposal');
     Route::get('/data-proposal', [ProposalController::class, 'dataProposal'])->name('superadmin.proposal.data-proposal');
     Route::get('/proposal/{id}', [ProposalController::class, 'show'])->name('superadmin.proposal.show');
+    // Route::get('/proposal/{id}', [ProposalController::class, 'edit'])->name('superadmin.proposal.edit');
     Route::get('/proposal/tanda-terima/{id}', [ProposalController::class, 'tandaTerima'])->name('superadmin.proposal.tanda-terima');
+    Route::get('/proposal/disposisi/{id}', [ProposalController::class, 'disposisi'])->name('superadmin.proposal.disposisi');
+    Route::get('/proposal/form-ceklis/{id}', [ProposalController::class, 'formCeklis'])->name('superadmin.proposal.form-ceklis');
     Route::put('/proposal/ubah-status/{id}', [ProposalController::class, 'ubahStatus'])->name('superadmin.proposal.ubah-status');
     Route::get('/proposals/export/excel', [ProposalController::class, 'exportCsv'])->name('proposal.export.csv');
 });
