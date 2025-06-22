@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('judul_berkas');
             $table->string('no_surat')->unique();
+            $table->string('agenda_number')->nullable();
+            $table->date('tgl_surat');
             $table->text('jenis_berkas');
             $table->string('perihal');
             $table->string('pengaju');
