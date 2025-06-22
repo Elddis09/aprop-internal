@@ -43,7 +43,15 @@
                         <div class="body">
                             <div class="row">
                                 <div class="col-md-12 text-right">
+                                     @if(Auth::check() && Auth::user()->role === 'frontoffice')
                                     <a href="{{ route('superadmin.proposal.tanda-terima', $proposal->id) }}" class="btn btn-primary">Tanda Terima</a>
+                                    @endif
+                                    @if(Auth::check() && Auth::user()->role === 'backoffice')
+                                    <a href="{{ route('superadmin.proposal.disposisi', $proposal->id) }}" class="btn btn-primary">Disposisi</a>
+                                    @endif
+                                    @if(Auth::check() && Auth::user()->role === 'binpres'|| Auth::user()->role === 'keuangan')
+                                    <a href="{{ route('superadmin.proposal.form-ceklis', $proposal->id) }}" class="btn btn-primary">Form Ceklis</a>
+                                    @endif
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#qrCodeModal">Share</button>
                                 </div>
 
