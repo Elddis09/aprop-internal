@@ -132,9 +132,15 @@ use App\Models\Mitra;
                                             <h4 class="fw-bold mt-4 mb-3">Informasi Berkas</h4>
 
                                             <div class="mb-3">
+                                                <label for="no_surat">No Surat</label>
                                                 <input type="text" name="no_surat" class="form-control" placeholder="No Surat">
                                             </div>
                                             <div class="mb-3">
+                                                <label for="tgl_surat">Tanggal Surat</label>
+                                                <input type="date" name="tgl_surat" class="form-control" placeholder="No Surat">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="perihal">Perihal</label>
                                                 <input type="text" name="perihal" class="form-control" placeholder="Perihal">
                                             </div>
                                             <div class="mb-3">
@@ -169,7 +175,10 @@ use App\Models\Mitra;
                                             </div> -->
                                             <div class="mb-3">
                                                 <label>Tanggal Pengajuan</label>
-                                                <input type="date" name="tgl_pengajuan" min="{{ \Carbon\Carbon::now()->toDateString() }}" class="form-control">
+                                                <input type="date" name="tgl_pengajuan"
+                                                    value="{{ \Carbon\Carbon::now()->toDateString() }}"
+                                                    class="form-control"
+                                                    readonly>
                                             </div>
                                             <div class="mb-3">
                                                 <label>File Utama</label>
