@@ -65,7 +65,7 @@ class FoController extends Controller
             $query->where('to_position', $userRole)
                 ->where('is_current', true);
         })
-            ->whereIn('status', ['diterima', 'diproses', 'pending'])
+            ->whereIn('status', ['diterima', 'pending'])
             ->where('status', '!=', 'cancel')
             ->where('is_finished', false)
             ->count();

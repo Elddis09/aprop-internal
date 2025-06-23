@@ -5,7 +5,7 @@
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30">
-            </div>
+        </div>
         <p>Please wait...</p>
     </div>
 </div>
@@ -111,13 +111,16 @@
             {{-- Baris Pertama (4 Card) untuk Statistik Spesifik --}}
             <div class="row clearfix">
                 <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
-                        <div class="body">
-                            <p class="m-b-20"><i class="zmdi zmdi-notifications-active zmdi-hc-3x col-info"></i></p>
-                            <span>Kotak Masuk (Di Posisi Anda)</span>
-                            <h3 class="m-b-10">{{ $kotakMasukRoleSaatIni }}</h3>
+                    <a href="{{ route('superadmin.proposal-terbaru') }}">
+
+                        <div class="card text-center">
+                            <div class="body">
+                                <p class="m-b-20"><i class="zmdi zmdi-notifications-active zmdi-hc-3x col-info"></i></p>
+                                <span>Kotak Masuk (Di Posisi Anda)</span>
+                                <h3 class="m-b-10">{{ $kotakMasukRoleSaatIni }}</h3>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">

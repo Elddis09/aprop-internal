@@ -62,7 +62,7 @@ class SuperadminController extends Controller
         $kotakMasukRoleSaatIni = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
             $query->where('to_position', $userRole);
         })
-            ->whereIn('status', ['diterima', 'diproses', 'disetujui']) // <--- Ubah di sini
+            ->whereIn('status', ['diterima', 'disetujui']) // <--- Ubah di sini
             ->where('is_finished', false)
             ->count();
 

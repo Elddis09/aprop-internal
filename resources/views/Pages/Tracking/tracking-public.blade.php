@@ -33,7 +33,14 @@
                             </div>
                             <div class="col-md-6 mt-5">
                                 <p><strong>Alamat:</strong> {{ $proposal->alamat }}</p>
-                                <p><strong>Email:</strong> {{ $proposal->email }}</p>
+                                 <p><strong>Alamat:</strong> {{ $proposal->alamat }}</p>
+                                    <strong>Email:</strong>
+                                    @if ($proposal->email)
+                                    {{ $proposal->email }}
+                                    @else
+                                    -
+                                    @endif
+                                    </p>
                                 <p><strong>No Telepon:</strong> {{ $proposal->no_telepon }}</p>
                             </div>
                         </div>
@@ -117,9 +124,9 @@
                                     <p>Keterangan: {{ $track->keterangan }}</p>
                                     @endif
                                     @if ($track->from_position && $track->to_position)
-                                    <p>Dari: {{ ucfirst($track->from_position) }} -> Ke: {{ ucfirst($track->to_position) }}</p>
+                                    <!-- <p>Dari: {{ ucfirst($track->from_position) }} -> Ke: {{ ucfirst($track->to_position) }}</p> -->
                                     @elseif ($track->to_position)
-                                    <p>Posisi: {{ ucfirst($track->to_position) }}</p>
+                                    <!-- <p>Posisi: {{ ucfirst($track->to_position) }}</p> -->
                                     @endif
                                 </div>
                             </li>
@@ -166,6 +173,20 @@
                             -
                             @endif
                         </p>
+                         @if ($proposal->data_updated_at) {{-- <<< GUNAKAN KOLOM BARU INI --}}
+                            <p class="text-muted text-sm mt-3">
+                                <i class="zmdi zmdi-info-outline"></i>
+                                Data terakhir diperbarui pada tanggal
+                                <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('d F Y') }}</strong>
+                                di jam
+                                <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('H:i') }}</strong>
+                                @if ($proposal->dataUpdatedByUser) {{-- <<< GUNAKAN RELASI BARU INI --}}
+                                oleh <strong>{{ $proposal->dataUpdatedByUser->name }}</strong>.
+                                @else
+                                .
+                                @endif
+                            </p>
+                            @endif
                         <!-- {{-- Tambahan keterangan jika proposal sudah selesai --}} -->
                         @if ($proposal->is_finished || in_array($proposal->status, ['disetujui', 'selesai']))
                         <p class="text-info mt-3">

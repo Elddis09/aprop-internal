@@ -5,7 +5,7 @@
 <div class="page-loader-wrapper">
     <div class="loader">
         <div class="m-t-30">
-            </div>
+        </div>
         <p>Please wait...</p>
     </div>
 </div>
@@ -112,13 +112,15 @@
             {{-- Baris Pertama Statistik Spesifik FO (4 Card) --}}
             <div class="row clearfix">
                 <div class="col-lg-3 col-md-6">
-                    <div class="card text-center">
+                    <a href="{{ route('superadmin.proposal-terbaru') }}"
+                        class="card text-center"
+                        style="display: block; text-decoration: none; color: inherit;">
                         <div class="body">
                             <p class="m-b-20"><i class="zmdi zmdi-notifications-active zmdi-hc-3x col-info"></i></p>
                             <span>Kotak Masuk (Di Posisi Saya)</span>
                             <h3 class="m-b-10">{{ $kotakMasukFo }}</h3>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="card text-center">

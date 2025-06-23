@@ -34,6 +34,8 @@ class Proposal extends Model
         'jabatan',
         'is_finished',
         'mitra_id',
+        'data_updated_at',          
+        'data_updated_by_user_id', 
     ];
 
     public function tracks()
@@ -54,6 +56,11 @@ class Proposal extends Model
     public function mitra()
     {
         return $this->belongsTo(Mitra::class);
+    }
+
+    public function dataUpdatedByUser()
+    {
+        return $this->belongsTo(User::class, 'data_updated_by_user_id');
     }
 
     public function getNamaCaborAttribute($value)

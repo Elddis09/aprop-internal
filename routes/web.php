@@ -44,16 +44,18 @@ Route::middleware(['auth', 'role:superadmin,frontoffice,backoffice,stafpimpinan,
     Route::get('/bank-proposals', [ProposalController::class, 'bankProposals'])->name('superadmin.proposal.bank-proposal');
     Route::get('/data-proposal', [ProposalController::class, 'dataProposal'])->name('superadmin.proposal.data-proposal');
     Route::get('/proposal/{id}', [ProposalController::class, 'show'])->name('superadmin.proposal.show');
-    // Route::get('/proposal/{id}', [ProposalController::class, 'edit'])->name('superadmin.proposal.edit');
+    Route::get('/proposal/edit/{id}', [ProposalController::class, 'edit'])->name('superadmin.proposal.edit');
+    Route::put('/proposal/update/{proposal}', [ProposalController::class, 'update'])->name('superadmin.proposal.update');
     Route::get('/proposal/tanda-terima/{id}', [ProposalController::class, 'tandaTerima'])->name('superadmin.proposal.tanda-terima');
     Route::get('/proposal/disposisi/{id}', [ProposalController::class, 'disposisi'])->name('superadmin.proposal.disposisi');
     Route::get('/proposal/form-ceklis/{id}', [ProposalController::class, 'formCeklis'])->name('superadmin.proposal.form-ceklis');
     Route::put('/proposal/ubah-status/{id}', [ProposalController::class, 'ubahStatus'])->name('superadmin.proposal.ubah-status');
     Route::get('/proposals/export/excel', [ProposalController::class, 'exportCsv'])->name('proposal.export.csv');
+    Route::post('/proposal/{proposal}/generate-agenda', [ProposalController::class, 'generateAgendaNumber'])->name('proposal.generateAgenda');
 });
 
 // ==================  ROUTE CREATE PROPOSAL ==================
-Route::middleware(['auth', 'role:frontoffice,superadmin'])->prefix('frontoffice')->group(function () {
+Route::middleware(['auth', 'role:frontoffice,superadmin,backoffice,stafpimpinan,sekretarisumum,stafbinpres,binpres,sekretarisdua,ketuadua,ketuaumum,keuangan,bai'])->prefix('frontoffice')->group(function () {
     Route::get('/proposal', [ProposalController::class, 'dataProposal'])->name('klien.proposal.data-proposal');
     Route::get('/proposal/create', [ProposalController::class, 'create'])->name('klien.proposal.create');
     Route::post('/proposal', [ProposalController::class, 'store'])->name('klien.proposal.store');

@@ -43,7 +43,7 @@
                         <div class="body">
                             <div class="row">
                                 <div class="col-md-12 text-right">
-                                     @if(Auth::check() && Auth::user()->role === 'frontoffice')
+                                    @if(Auth::check() && Auth::user()->role === 'frontoffice')
                                     <a href="{{ route('superadmin.proposal.tanda-terima', $proposal->id) }}" class="btn btn-primary">Tanda Terima</a>
                                     @endif
                                     @if(Auth::check() && Auth::user()->role === 'backoffice')
@@ -72,7 +72,13 @@
                                 </div>
                                 <div class="col-md-6 mt-5">
                                     <p><strong>Alamat:</strong> {{ $proposal->alamat }}</p>
-                                    <p><strong>Email:</strong> {{ $proposal->email }}</p>
+                                    <strong>Email:</strong>
+                                    @if ($proposal->email)
+                                    {{ $proposal->email }}
+                                    @else
+                                    -
+                                    @endif
+                                    </p>
                                     <p><strong>No Telepon:</strong> {{ $proposal->no_telepon }}</p>
                                 </div>
                             </div>
@@ -157,7 +163,7 @@
                                         <p>Keterangan: {{ $track->keterangan }}</p>
                                         @endif
                                         @if ($track->from_position && $track->to_position && !($track->status_label === 'Proposal diajukan dan diterima' && $track->actorUser))
-                                        <p>Dari: {{ ucfirst($track->from_position) }} -> Ke: {{ ucfirst($track->to_position) }}</p>
+                                        <!-- <p>Dari: {{ ucfirst($track->from_position) }} -> Ke: {{ ucfirst($track->to_position) }}</p> -->
                                         @elseif ($track->to_position && !($track->status_label === 'Proposal diajukan dan diterima' && $track->actorUser))
                                         <p>Posisi: {{ ucfirst($track->to_position) }}</p>
                                         @endif
@@ -199,6 +205,20 @@
                                 -
                                 @endif
                             </p>
+                            @if ($proposal->data_updated_at) {{-- <<< GUNAKAN KOLOM BARU INI --}}
+                            <p class="text-muted text-sm mt-3">
+                                <i class="zmdi zmdi-info-outline"></i>
+                                Data terakhir diperbarui pada tanggal
+                                <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('d F Y') }}</strong>
+                                di jam
+                                <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('H:i') }}</strong>
+                                @if ($proposal->dataUpdatedByUser) {{-- <<< GUNAKAN RELASI BARU INI --}}
+                                oleh <strong>{{ $proposal->dataUpdatedByUser->name }}</strong>.
+                                @else
+                                .
+                                @endif
+                            </p>
+                            @endif
                             @if ($proposal->is_finished || in_array($proposal->status, ['disetujui', 'selesai']))
                             <p class="text-info mt-3">
                                 *Proses proposal telah selesai. Anda akan dihubungi pihak KONI untuk langkah selanjutnya.

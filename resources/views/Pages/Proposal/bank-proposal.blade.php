@@ -135,9 +135,12 @@
                                             </td>
                                             <td>{{ $proposal->nama_petugas }}</td>
                                             <td class="project-actions">
-                                                <div class="actions">
-                                                    <a href="{{ route('superadmin.proposal.show', $proposal->id) }}" class="btn btn-neutral btn-sm mb-2">
-                                                        Detail
+                                                <div class="actions d-flex align-items-center justify-content-center">
+                                                    <a href="{{ route('superadmin.proposal.show', $proposal->id) }}" class="btn btn-neutral btn-sm">
+                                                        <i class="zmdi zmdi-eye col-green"></i>
+                                                    </a>
+                                                    <a href="{{ route('superadmin.proposal.edit', $proposal->id) }}" class="btn btn-neutral btn-sm">
+                                                        <i class="zmdi zmdi-edit"></i>
                                                     </a>
                                                 </div>
                                             </td>
