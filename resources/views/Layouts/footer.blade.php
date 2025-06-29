@@ -69,11 +69,6 @@
  <script src="assets/bundles/libscripts.bundle.js"></script>
  <script src="assets/bundles/vendorscripts.bundle.js"></script>
 
- <script src="assets/bundles/knob.bundle.js"></script>
- <script src="assets/bundles/jvectormap.bundle.js"></script>
- <script src="assets/bundles/morrisscripts.bundle.js"></script>
- <script src="assets/bundles/sparkline.bundle.js"></script>
- <script src="assets/bundles/doughnut.bundle.js"></script>
 
  <script src="assets/bundles/mainscripts.bundle.js"></script>
  <script src="assets/js/pages/index.js"></script>

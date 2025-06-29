@@ -36,7 +36,7 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
 });
 
 // ================== ROUTE ALL ROLE ==================
-Route::middleware(['auth', 'role:superadmin,frontoffice,backoffice,stafpimpinan,sekretarisumum,stafbinpres,binpres,sekretarisdua,ketuadua,ketuaumum,keuangan,bai'])->group(function () {
+Route::middleware(['auth', 'role:superadmin,frontoffice,backoffice,stafpimpinan,sekretarisumum,stafbinpres,binpres,sekretarisdua,ketuadua,ketuaumum,keuangan,bai,stafumum,bidangumum,sekretaristiga,ketuatiga'])->group(function () {
     Route::get('/dashboard-admin', [SuperadminController::class, 'dashboard'])->name('superadmin.dashboard');
     Route::get('/proposal-terbaru', [ProposalController::class, 'proposalTerbaru'])->name('superadmin.proposal-terbaru');
 
@@ -48,6 +48,8 @@ Route::middleware(['auth', 'role:superadmin,frontoffice,backoffice,stafpimpinan,
     Route::put('/proposal/update/{proposal}', [ProposalController::class, 'update'])->name('superadmin.proposal.update');
     Route::get('/proposal/tanda-terima/{id}', [ProposalController::class, 'tandaTerima'])->name('superadmin.proposal.tanda-terima');
     Route::get('/proposal/disposisi/{id}', [ProposalController::class, 'disposisi'])->name('superadmin.proposal.disposisi');
+    Route::get('/proposal/form-undangan/{id}', [ProposalController::class, 'formUndangan'])->name('superadmin.proposal.form-undangan');
+    Route::get('/proposal/form-peminjaman/{id}', [ProposalController::class, 'formPeminjaman'])->name('superadmin.proposal.form-peminjaman');
     Route::get('/proposal/form-ceklis/{id}', [ProposalController::class, 'formCeklis'])->name('superadmin.proposal.form-ceklis');
     Route::put('/proposal/ubah-status/{id}', [ProposalController::class, 'ubahStatus'])->name('superadmin.proposal.ubah-status');
     Route::get('/proposals/export/excel', [ProposalController::class, 'exportCsv'])->name('proposal.export.csv');
@@ -55,7 +57,7 @@ Route::middleware(['auth', 'role:superadmin,frontoffice,backoffice,stafpimpinan,
 });
 
 // ==================  ROUTE CREATE PROPOSAL ==================
-Route::middleware(['auth', 'role:frontoffice,superadmin,backoffice,stafpimpinan,sekretarisumum,stafbinpres,binpres,sekretarisdua,ketuadua,ketuaumum,keuangan,bai'])->prefix('frontoffice')->group(function () {
+Route::middleware(['auth', 'role:frontoffice,superadmin,backoffice,stafpimpinan,sekretarisumum,stafbinpres,binpres,sekretarisdua,ketuadua,ketuaumum,keuangan,bai,stafumum,bidangumum,sekretaristiga,ketuatiga'])->prefix('frontoffice')->group(function () {
     Route::get('/proposal', [ProposalController::class, 'dataProposal'])->name('klien.proposal.data-proposal');
     Route::get('/proposal/create', [ProposalController::class, 'create'])->name('klien.proposal.create');
     Route::post('/proposal', [ProposalController::class, 'store'])->name('klien.proposal.store');

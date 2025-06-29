@@ -66,7 +66,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Id User</th>
+                                        <!-- <th>Id User</th> -->
                                         <th>Nama</th>
                                         <th>Email</th>
                                         <th>Username</th>
@@ -79,7 +79,7 @@
                                     @forelse ($users as $user)
                                     <tr>
                                         <th scope="row">{{ $loop->iteration }}</th>
-                                        <td>{{ $user->id }}</td>
+                                        <!-- <td>{{ $user->id }}</td> -->
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->username }}</td>

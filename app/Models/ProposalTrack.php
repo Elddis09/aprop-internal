@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\RoleFormatter;
 
 class ProposalTrack extends Model
 {
@@ -31,5 +32,13 @@ class ProposalTrack extends Model
     public function actorUser()
     {
         return $this->belongsTo(User::class, 'actor_id');
+    }
+     public function getFormattedToPositionAttribute()
+    {
+        return RoleFormatter::format($this->to_position);
+    }
+     public function getFormattedFromPositionAttribute()
+    {
+        return RoleFormatter::format($this->from_position);
     }
 }

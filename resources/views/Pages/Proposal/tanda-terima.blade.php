@@ -108,11 +108,11 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-center vertical-middle info-cell">
+                    <td class="text-center vertical-middle info-cell data-row-with-content">
                         {{$proposal->pengaju}} <br />
                         ({{$proposal->no_telepon}})
                     </td>
-                    <td class="text-center vertical-middle salma-cell">
+                    <td class="text-center vertical-middle salma-cell data-row-with-content">
                         <strong>
                             {{$proposal->nama_petugas}}
                             <br />

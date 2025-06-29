@@ -18,6 +18,7 @@ class Proposal extends Model
         'judul_berkas',
         'pengaju',
         'jenis_berkas',
+        'kategoriBerkas',
         'no_surat',
         'perihal',
         'pengcab',

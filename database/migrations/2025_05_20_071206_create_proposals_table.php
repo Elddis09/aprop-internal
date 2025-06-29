@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('agenda_number')->nullable();
             $table->date('tgl_surat');
             $table->text('jenis_berkas');
+            $table->enum('kategoriBerkas', ['undangan', 'peminjaman', 'BantuanDana', 'lainnya'])->nullable()->default(null);
             $table->string('perihal');
             $table->string('pengaju');
             $table->string('pengcab');
@@ -34,6 +35,9 @@ return new class extends Migration
             $table->string('file_utama')->nullable();
             $table->string('nama_petugas');
             $table->timestamps();
+            $table->timestamp('data_updated_at')->nullable();
+            $table->unsignedBigInteger('data_updated_by_user_id')->nullable();
+            $table->foreign('data_updated_by_user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 

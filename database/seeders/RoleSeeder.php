@@ -22,6 +22,10 @@ class RoleSeeder extends Seeder
             'ketuaumum',
             'keuangan',
             'bai',
+            'stafumum',         
+            'bidangumum',       
+            'sekretaristiga',    
+            'ketuatiga',  
         ];
         foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role]);

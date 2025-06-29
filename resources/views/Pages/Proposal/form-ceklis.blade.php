@@ -30,7 +30,7 @@
                             class="img-fluid logo-bandung" />
                     </td>
                     <td colspan="4" class="header-cell header-center">
-                        <div class="fw-bold fs-5 mb-0">
+                        <div class="fw-bold fs-2 mb-0">
                             FORMAT CEKLIS
                         </div>
                         <div class="fw-bold fs-5">
@@ -45,14 +45,14 @@
                     </td>
                     <td
                         colspan="1"
-                        class="header-cell header-top-right header-tanggal">
+                        class="header-cell header-top-right header-paraf-cell">
                         <span>Tanggal Masuk:</span> <textarea
-                            class="header-input-box"
+                            class="header-input-box fw-bold"
                             rows="1">{{ \Carbon\Carbon::parse($proposal->tgl_pengajuan)->format('d/m/y') }}</textarea>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="6" class="data-row">
+                    <td colspan="6" class="data-row-with-content">
                         <span class="fw-bold">DARI / PENGIRIM :</span>
                         <span>
                             @if($proposal->mitra)
@@ -71,16 +71,16 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="8" class="data-row">
+                    <td colspan="8" class="data-row-with-content">
                         <span class="fw-bold">PERIHAL :</span>
                         <span>{{$proposal->perihal}}</span>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="8" class="data-row checkbox-row">
+                    <td colspan="8" class="data-row-with-content checkbox-row">
                         <span class="fw-bold me-3">KODE PROPOSAL :</span>
                         <div class="d-inline-block">
-                            <label class="checkbox-label"><input type="checkbox" checked />
+                            <label class="checkbox-label"><input type="checkbox"/>
                                 DOP</label>
                             <label class="checkbox-label"><input type="checkbox" /> BKO</label>
                             <label class="checkbox-label"><input type="checkbox" /> MK</label>
@@ -176,14 +176,14 @@
                             <div class="section-title fw-bold">
                                 3. MENGIKUTI KEJUARAAN - KEJUARAAN (MK)
                             </div>
-                            <label class="checkbox-list-item"><input type="checkbox" checked /> Surat
+                            <label class="checkbox-list-item"><input type="checkbox" /> Surat
                                 Mengikuti Permohonan
                                 Pengcab/Pengkot</label>
-                            <label class="checkbox-list-item"><input type="checkbox" checked />
+                            <label class="checkbox-list-item"><input type="checkbox"  />
                                 Proposal Kegiatan</label>
-                            <label class="checkbox-list-item"><input type="checkbox" checked />
+                            <label class="checkbox-list-item"><input type="checkbox"  />
                                 Rencana Anggaran Biaya (RAB)</label>
-                            <label class="checkbox-list-item"><input type="checkbox" checked /> Nama
+                            <label class="checkbox-list-item"><input type="checkbox"  /> Nama
                                 Atlet dan Nomor Pertandingan yang
                                 Diikuti</label>
                             <label class="checkbox-list-item"><input type="checkbox" /> Surat

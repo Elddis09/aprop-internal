@@ -21,7 +21,7 @@
                             <div class="col-md-6">
                                 <h5 class="fw-bold mt-4 mb-3">Informasi Pengaju</h5>
                                 <p><strong>ID Proposal:</strong> {{ $proposal->id }}</p>
-                                  <p><strong> {{ strtoupper($proposal->pengcab) }}</strong>
+                                <p><strong> {{ strtoupper($proposal->pengcab) }}</strong>
                                 <p><strong>Cabor/Pemohon:</strong> @if($proposal->mitra)
                                     {{ strtoupper($proposal->mitra->nama) }}
                                     @else
@@ -33,14 +33,14 @@
                             </div>
                             <div class="col-md-6 mt-5">
                                 <p><strong>Alamat:</strong> {{ $proposal->alamat }}</p>
-                                 <p><strong>Alamat:</strong> {{ $proposal->alamat }}</p>
-                                    <strong>Email:</strong>
-                                    @if ($proposal->email)
-                                    {{ $proposal->email }}
-                                    @else
-                                    -
-                                    @endif
-                                    </p>
+                                <p><strong>Alamat:</strong> {{ $proposal->alamat }}</p>
+                                <strong>Email:</strong>
+                                @if ($proposal->email)
+                                {{ $proposal->email }}
+                                @else
+                                -
+                                @endif
+                                </p>
                                 <p><strong>No Telepon:</strong> {{ $proposal->no_telepon }}</p>
                             </div>
                         </div>
@@ -48,16 +48,16 @@
                         <hr>
 
                         <h5 class="fw-bold mt-4 mb-3">Informasi Berkas</h5>
-                        
+
                         <p><strong>No Surat:</strong> {{ $proposal->no_surat }}</p>
                         <p><strong>Judul Berkas:</strong> {{ $proposal->judul_berkas }}</p>
-                        
-                        <p><strong>Perihal:</strong> {{ $proposal->perihal }}</p> 
-                        
-                        <p><strong>Jenis Berkas:</strong> {{ $proposal->jenis_berkas }}</p>
+
+                        <p><strong>Perihal:</strong> {{ $proposal->perihal }}</p>
+
+                       <p><strong>Jenis Berkas:</strong> {{ucfirst ($proposal->jenis_berkas) }}</p>
                         <p><strong>Tanggal Pengajuan:</strong> {{ \Carbon\Carbon::parse($proposal->tgl_pengajuan)->format('d M Y') }}</p>
                         <!-- <p><strong>Tujuan Berkas:</strong> {{ $proposal->tujuan_berkas }}</p> -->
-                        <p><strong>Status :</strong> {{ $proposal->status }}</p>
+                       <p><strong>Status:</strong> {{ ucfirst($proposal->status) }}</p>
                         <!-- <p><strong>Ringkasan Berkas:</strong> {{ $proposal->ringkasan_berkas }}</p> -->
 
                         <h5 class="fw-bold mt-4 mb-3">Lampiran Utama</h5>
@@ -114,19 +114,24 @@
                                     <i class="zmdi zmdi-label"></i>
                                 </div>
                                 <div class="cbp_tmlabel">
+                                    @if ($track->status_label === 'Proposal diajukan dan diterima' && $track->actorUser)
+                                    <span>Proposal diajukan dan diterima oleh {{ $track->actorUser->name }}</span>
+                                    @else
                                     <span>{{ $track->status_label }}</span>
                                     @if ($track->actorUser)
                                     oleh <a href="javascript:void(0);">{{ $track->actorUser->name }}</a>
                                     @else
                                     oleh Sistem
                                     @endif
+                                    @endif
+
                                     @if ($track->keterangan)
                                     <p>Keterangan: {{ $track->keterangan }}</p>
                                     @endif
-                                    @if ($track->from_position && $track->to_position)
+                                    @if ($track->from_position && $track->to_position && !($track->status_label === 'Proposal diajukan dan diterima' && $track->actorUser))
                                     <!-- <p>Dari: {{ ucfirst($track->from_position) }} -> Ke: {{ ucfirst($track->to_position) }}</p> -->
-                                    @elseif ($track->to_position)
-                                    <!-- <p>Posisi: {{ ucfirst($track->to_position) }}</p> -->
+                                    @elseif ($track->to_position && !($track->status_label === 'Proposal diajukan dan diterima' && $track->actorUser))
+                                    <p>Posisi: {{ ucfirst($track->to_position) }}</p>
                                     @endif
                                 </div>
                             </li>
@@ -156,15 +161,17 @@
                     <div class="body">
                         <h5 class="fw-bold mt-4 mb-3">Catatan :</h5>
                         <p><strong>Status:</strong> {{ ucfirst($proposal->status) }}</p>
+                        @unless ($proposal->is_finished || in_array($proposal->status, ['selesai', 'ditolak', 'cancel']))
                         @if ($proposal->currentTrack)
                         <div class="form-group mb-3">
-                            <p><strong>Posisi Terakhir :</strong> {{ ucfirst($proposal->currentTrack->to_position) }}</p>
+                            <p><strong>Posisi Terakhir :</strong> {{ $proposal->currentTrack->formatted_to_position }}</p>
                         </div>
                         @else
                         <div class="form-group mb-3">
                             <p><strong>Posisi Terakhir :</strong> Belum dalam proses</p>
                         </div>
                         @endif
+                        @endunless
                         <p>
                             <strong>Catatan Revisi/Tindakan Lanjut:</strong>
                             @if($proposal->currentTrack)
@@ -173,24 +180,23 @@
                             -
                             @endif
                         </p>
-                         @if ($proposal->data_updated_at) {{-- <<< GUNAKAN KOLOM BARU INI --}}
-                            <p class="text-muted text-sm mt-3">
-                                <i class="zmdi zmdi-info-outline"></i>
-                                Data terakhir diperbarui pada tanggal
-                                <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('d F Y') }}</strong>
-                                di jam
-                                <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('H:i') }}</strong>
-                                @if ($proposal->dataUpdatedByUser) {{-- <<< GUNAKAN RELASI BARU INI --}}
-                                oleh <strong>{{ $proposal->dataUpdatedByUser->name }}</strong>.
-                                @else
-                                .
-                                @endif
-                            </p>
+                        @if ($proposal->data_updated_at)
+                        <p class="text-muted text-sm mt-3">
+                            <i class="zmdi zmdi-info-outline"></i>
+                            Data terakhir diperbarui pada tanggal
+                            <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('d F Y') }}</strong>
+                            di jam
+                            <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('H:i') }}</strong>
+                            @if ($proposal->dataUpdatedByUser)
+                            oleh <strong>{{ $proposal->dataUpdatedByUser->name }}</strong>.
+                            @else
+                            .
                             @endif
-                        <!-- {{-- Tambahan keterangan jika proposal sudah selesai --}} -->
+                        </p>
+                        @endif
                         @if ($proposal->is_finished || in_array($proposal->status, ['disetujui', 'selesai']))
                         <p class="text-info mt-3">
-                            *Proses proposal telah selesai. Anda akan dihubungi pihak KONI untuk langkah selanjutnya.
+                            *Proses Pengajuan telah selesai. Pihak KONI akan menginformasikan langkah selanjutnya melalui email atau WhatsApp. Mohon Cek komunikasi Anda secara berkala.
                         </p>
                         @endif
                     </div>

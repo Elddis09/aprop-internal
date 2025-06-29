@@ -50,7 +50,7 @@
             <li class="{{ Request::is('bank-proposals*') ? 'active' : '' }}">
                 <a href="{{ route('superadmin.proposal.bank-proposal') }}"><i class="zmdi zmdi-folder-star-alt"></i><span>Bank Proposal</span></a>
             </li>
-            <li class="{{ Request::is('data-proposal*') ? 'active' : '' }}">
+            <!-- <li class="{{ Request::is('data-proposal*') ? 'active' : '' }}">
                 <a href="{{ route('superadmin.proposal.data-proposal') }}"><i class="zmdi zmdi-folder-star-alt"></i><span>Data Proposal</span></a>
             </li>
             <li class="{{ Request::is('proposal-terbaru*') ? 'active' : '' }}">
@@ -58,7 +58,7 @@
             </li>
             <li class="{{ Request::is('frontoffice/proposal/create*') ? 'active' : '' }}">
                 <a href="{{ route('klien.proposal.create') }}"><i class="zmdi zmdi-file-plus"></i><span>Ajukan Proposal</span></a>
-            </li>
+            </li> -->
             <li class="{{ Request::is('data-user*') || Request::is('user/create*') ? 'active' : '' }}">
                 <a href="{{ route('superadmin.data-user') }}"><i class="zmdi zmdi-accounts"></i><span>Data User</span></a>
             </li>

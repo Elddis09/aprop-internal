@@ -43,15 +43,31 @@
                         <div class="body">
                             <div class="row">
                                 <div class="col-md-12 text-right">
+                                    {{-- Tanda Terima: Hanya untuk Frontoffice --}}
                                     @if(Auth::check() && Auth::user()->role === 'frontoffice')
                                     <a href="{{ route('superadmin.proposal.tanda-terima', $proposal->id) }}" class="btn btn-primary">Tanda Terima</a>
                                     @endif
+
+                                    {{-- Disposisi: Hanya untuk Backoffice --}}
                                     @if(Auth::check() && Auth::user()->role === 'backoffice')
                                     <a href="{{ route('superadmin.proposal.disposisi', $proposal->id) }}" class="btn btn-primary">Disposisi</a>
                                     @endif
-                                    @if(Auth::check() && Auth::user()->role === 'binpres'|| Auth::user()->role === 'keuangan')
+
+                                    {{-- Form Bantuan Dana: Untuk Binpres ATAU Keuangan --}}
+                                    @if(Auth::check() && (Auth::user()->role === 'binpres' || Auth::user()->role === 'keuangan') && $proposal->kategoriBerkas === 'BantuanDana')
                                     <a href="{{ route('superadmin.proposal.form-ceklis', $proposal->id) }}" class="btn btn-primary">Form Ceklis</a>
                                     @endif
+
+                                    {{-- Form Undangan: Untuk Sekretaris Umum ATAU Staf Pimpinan DAN Kategori Berkas adalah 'undangan' --}}
+                                    @if(Auth::check() && (Auth::user()->role === 'sekretarisumum' || Auth::user()->role === 'stafpimpinan') && $proposal->kategoriBerkas === 'undangan')
+                                    <a href="{{ route('superadmin.proposal.form-undangan', $proposal->id) }}" class="btn btn-primary">Form Undangan</a>
+                                    @endif
+
+                                    {{-- Form Peminjaman: Untuk Bidang Umum ATAU Sekretaris Tiga DAN Kategori Berkas adalah 'peminjaman' --}}
+                                    @if(Auth::check() && (Auth::user()->role === 'bidangumum' || Auth::user()->role === 'sekretaristiga' || Auth::user()->role === 'stafumum') && $proposal->kategoriBerkas === 'peminjaman')
+                                    <a href="{{ route('superadmin.proposal.form-peminjaman', $proposal->id) }}" class="btn btn-primary">Form Peminjaman</a>
+                                    @endif
+
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#qrCodeModal">Share</button>
                                 </div>
 
@@ -87,13 +103,19 @@
 
                             <h5 class="fw-bold mt-4 mb-3">Informasi Berkas</h5>
                             <p><strong>No Surat:</strong> {{ $proposal->no_surat }}</p>
-                            <p><strong>Judul Berkas:</strong> {{ $proposal->judul_berkas }}</p>
+                            <p><strong>Judul Berkas:</strong>
+                                @if ($proposal->judul_berkas)
+                                {{ $proposal->judul_berkas }}
+                                @else
+                                -
+                                @endif
+                            </p>
                             <p><strong>Perihal:</strong> {{ $proposal->perihal }}</p>
 
-                            <p><strong>Jenis Berkas:</strong> {{ $proposal->jenis_berkas }}</p>
+                            <p><strong>Jenis Berkas:</strong> {{ucfirst ($proposal->jenis_berkas) }}</p>
                             <p><strong>Tanggal Pengajuan:</strong> {{ \Carbon\Carbon::parse($proposal->tgl_pengajuan)->format('d M Y') }}</p>
                             <!-- <p><strong>Tujuan Berkas:</strong> {{ $proposal->tujuan_berkas }}</p> -->
-                            <p><strong>Status:</strong> {{ $proposal->status }}</p>
+                            <p><strong>Status:</strong> {{ ucfirst($proposal->status) }}</p>
                             <!-- <p><strong>Ringkasan Berkas:</strong> {{ $proposal->ringkasan_berkas }}</p> -->
 
                             <h5 class="fw-bold mt-4 mb-3">Lampiran Utama</h5>
@@ -188,15 +210,17 @@
                         <div class="body">
                             <h5 class="fw-bold mt-4 mb-3">Catatan :</h5>
                             <p><strong>Status:</strong> {{ ucfirst($proposal->status) }}</p>
+                            @unless ($proposal->is_finished || in_array($proposal->status, ['selesai', 'ditolak', 'cancel']))
                             @if ($proposal->currentTrack)
                             <div class="form-group mb-3">
-                                <p><strong>Posisi Terakhir :</strong> {{ ucfirst($proposal->currentTrack->to_position) }}</p>
+                                <p><strong>Posisi Terakhir :</strong> {{ $proposal->currentTrack->formatted_to_position }}</p>
                             </div>
                             @else
                             <div class="form-group mb-3">
                                 <p><strong>Posisi Terakhir :</strong> Belum dalam proses</p>
                             </div>
                             @endif
+                            @endunless
                             <p>
                                 <strong>Catatan Revisi/Tindakan Lanjut:</strong>
                                 @if($proposal->currentTrack)
@@ -205,14 +229,14 @@
                                 -
                                 @endif
                             </p>
-                            @if ($proposal->data_updated_at) {{-- <<< GUNAKAN KOLOM BARU INI --}}
+                            @if ($proposal->data_updated_at)
                             <p class="text-muted text-sm mt-3">
                                 <i class="zmdi zmdi-info-outline"></i>
                                 Data terakhir diperbarui pada tanggal
                                 <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('d F Y') }}</strong>
                                 di jam
                                 <strong>{{ \Carbon\Carbon::parse($proposal->data_updated_at)->translatedFormat('H:i') }}</strong>
-                                @if ($proposal->dataUpdatedByUser) {{-- <<< GUNAKAN RELASI BARU INI --}}
+                                @if ($proposal->dataUpdatedByUser)
                                 oleh <strong>{{ $proposal->dataUpdatedByUser->name }}</strong>.
                                 @else
                                 .
@@ -221,7 +245,7 @@
                             @endif
                             @if ($proposal->is_finished || in_array($proposal->status, ['disetujui', 'selesai']))
                             <p class="text-info mt-3">
-                                *Proses proposal telah selesai. Anda akan dihubungi pihak KONI untuk langkah selanjutnya.
+                                *Proses Pengajuan telah selesai. Pihak KONI akan menginformasikan langkah selanjutnya melalui email atau WhatsApp. Mohon Cek komunikasi Anda secara berkala.
                             </p>
                             @endif
                         </div>
@@ -266,7 +290,7 @@
                     @if ($currentPosition)
                     <div class="form-group mb-3">
                         <label>Posisi Terakhir (Proposal Berada)</label>
-                        <div><span class="badge bg-primary">{{ ucfirst($currentPosition) }}</span></div>
+                        <div><span class="badge bg-primary">{{ \App\Helpers\RoleFormatter::format($currentPosition) }}</span></div>
                     </div>
                     @endif
 
@@ -288,7 +312,7 @@
 
                     <div class="form-group mb-3">
                         <label for="statusProposal">Update Status</label>
-                        <select class="form-control" id="statusProposal" name="statusProposal">
+                        <select class="form-control" id="statusProposal" name="status">
                             <option disabled selected>-- Pilih Status --</option>
                             <option value="diproses" {{ $proposal->status == 'diproses' ? 'selected' : '' }}>Diproses</option>
                             <option value="disetujui" {{ $proposal->status == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
@@ -297,6 +321,21 @@
                             <option value="cancel" {{ $proposal->status == 'cancel' ? 'selected' : '' }}>Cancel</option>
                         </select>
                     </div>
+                    @if(Auth::check() && Auth::user()->role === 'backoffice'|| Auth::user()->role === 'superadmin')
+                    <div class="form-group mb-3">
+                        <label for="kategoriBerkas">Kategori Berkas</label>
+                        <select class="form-control" id="kategoriBerkas" name="kategoriBerkas">
+                            <option selected value="">-- Pilih Kategori --</option>
+                            <option value="undangan" {{ $proposal->kategoriBerkas == 'undangan' ? 'selected' : '' }}>Perm. Undangan</option>
+                            <option value="peminjaman" {{ $proposal->kategoriBerkas == 'peminjaman' ? 'selected' : '' }}>Perm.Peminjaman</option>
+                            <option value="BantuanDana" {{ $proposal->kategoriBerkas == 'BantuanDana' ? 'selected' : '' }}>Perm. Dana</option>
+                            <option value="lainnya" {{ $proposal->kategoriBerkas == 'lainnya' ? 'selected' : '' }}>Perm. Lainnya</option>
+                        </select>
+                    </div>
+                    @else
+
+                    <input type="hidden" name="kategoriBerkas" value="{{ $proposal->kategoriBerkas ?? '' }}">
+                    @endif
 
                     <!-- Dynamic 'Diteruskan Kepada' dropdown -->
                     <div class="form-group mb-3" id="forwardToSection">

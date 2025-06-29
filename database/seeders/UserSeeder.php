@@ -43,11 +43,11 @@ class UserSeeder extends Seeder
                 'role' => 'stafpimpinan',
             ],
             [
-                'name' => 'Sekretaris Umum',
-                'email' => 'sekretarisumum@example.com',
-                'username' => 'sekum',
+                'name' => 'Staf Umum',
+                'email' => 'stafumum@example.com',
+                'username' => 'staf_umum',
                 'password' => '123456',
-                'role' => 'sekretarisumum',
+                'role' => 'stafumum',
             ],
             [
                 'name' => 'Staf Binpres',
@@ -64,6 +64,20 @@ class UserSeeder extends Seeder
                 'role' => 'binpres',
             ],
             [
+                'name' => 'Bidang Umum',
+                'email' => 'bidangumum@example.com',
+                'username' => 'bidang_umum',
+                'password' => '123456',
+                'role' => 'bidangumum',
+            ],
+            [
+                'name' => 'Sekretaris Umum',
+                'email' => 'sekretarisumum@example.com',
+                'username' => 'sekum',
+                'password' => '123456',
+                'role' => 'sekretarisumum',
+            ],
+            [
                 'name' => 'Sekretaris II',
                 'email' => 'sekretarisdua@example.com',
                 'username' => 'sekretaris_dua',
@@ -71,11 +85,25 @@ class UserSeeder extends Seeder
                 'role' => 'sekretarisdua',
             ],
             [
+                'name' => 'Sekretaris III',
+                'email' => 'sekretaristiga@example.com',
+                'username' => 'sekretaris_tiga',
+                'password' => '123456',
+                'role' => 'sekretaristiga',
+            ],
+            [
                 'name' => 'Ketua II',
                 'email' => 'ketuadua@example.com',
                 'username' => 'ketua_dua',
                 'password' => '123456',
                 'role' => 'ketuadua',
+            ],
+            [
+                'name' => 'Ketua III',
+                'email' => 'ketuatiga@example.com',
+                'username' => 'ketua_tiga',
+                'password' => '123456',
+                'role' => 'ketuatiga',
             ],
             [
                 'name' => 'Ketua Umum',

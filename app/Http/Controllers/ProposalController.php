@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RoleFormatter;
 use App\Models\Mitra;
 use App\Models\Proposal;
 use App\Models\ProposalTrack;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-// use Illuminate\Support\Facades\Storage;
-// use Illuminate\Support\Facades\Http;
-// use Illuminate\Support\Facades\Cache;
+use App\Services\ProposalPdfGenerator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -34,7 +33,8 @@ class ProposalController extends Controller
                 $q->where('no_surat', 'like', '%' . $searchTerm . '%')
                     ->orWhere('perihal', 'like', '%' . $searchTerm . '%')
                     ->orWhere('judul_berkas', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('cabang_olahraga', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('cabang_olahraga', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('pengaju', 'like', '%' . $searchTerm . '%');
             });
         }
 
@@ -44,8 +44,7 @@ class ProposalController extends Controller
             ->where('status', '!=', 'dibatalkan')
             ->with('mitra', 'currentTrack.actorUser')
             ->latest()
-            ->get();
-
+            ->paginate(10);
         return view('Pages.Proposal.data-proposal', compact('proposals'));
     }
 
@@ -66,7 +65,11 @@ class ProposalController extends Controller
             'ketuadua',
             'keuangan',
             'bai',
-            'stafbinpres'
+            'stafbinpres',
+            'bidangumum',
+            'sekretaristiga',
+            'ketuatiga',
+            'stafumum',
         ];
 
         if (!in_array($userRole, $globalViewRoles)) {
@@ -76,16 +79,19 @@ class ProposalController extends Controller
         $query = Proposal::query();
 
         $searchTerm = $request->input('search');
+
         if ($searchTerm) {
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('no_surat', 'like', '%' . $searchTerm . '%')
                     ->orWhere('perihal', 'like', '%' . $searchTerm . '%')
                     ->orWhere('judul_berkas', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('cabang_olahraga', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('cabang_olahraga', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('pengaju', 'like', '%' . $searchTerm . '%');
             });
         }
 
-        $proposals = $query->with('mitra', 'currentTrack.actorUser')->latest()->get();
+
+        $proposals = $query->with('mitra', 'currentTrack.actorUser')->latest()->paginate(10);
 
         return view('Pages.Proposal.bank-proposal', compact('proposals'));
     }
@@ -117,7 +123,7 @@ class ProposalController extends Controller
     {
         // Validasi data input dari form
         $validatedData = $request->validate([
-            'judul_berkas' => 'required|string|max:255',
+            'judul_berkas' => 'nullable|string|max:255',
             'pengaju' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'no_surat' => 'required|string|max:255',
@@ -239,7 +245,7 @@ class ProposalController extends Controller
         // Membuat entri Proposal baru di database
         $proposal = Proposal::create([
             'user_id' => Auth::id(), // ID pengguna yang sedang login
-            'judul_berkas' => $validatedData['judul_berkas'],
+            'judul_berkas' => $validatedData['judul_berkas'] ?? '',
             'pengaju' => $validatedData['pengaju'],
             'no_surat' => $validatedData['no_surat'],
             'tgl_surat' => $validatedData['tgl_surat'],
@@ -407,24 +413,43 @@ class ProposalController extends Controller
                 $canUpdateStatus = true;
             }
         }
-
+        $isBackoffice = in_array($userRole, ['backoffice', 'superadmin']);
         return view('Pages.Proposal.detail-proposal', compact('proposal', 'currentPosition', 'availableUsersForPositions', 'canUpdateStatus'));
     }
 
     // PROPOSAL KOTAK MASUK
-    public function proposalTerbaru()
+    public function proposalTerbaru(Request $request)
     {
         $user = Auth::user();
         $userRole = strtolower($user->role);
 
-        $proposals = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
-            $query->where('to_position', $userRole);
+        // Inisialisasi query builder
+        $query = Proposal::query();
+
+        $searchTerm = $request->input('search');
+        if ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('no_surat', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('perihal', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('judul_berkas', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('cabang_olahraga', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('pengaju', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Terapkan semua kondisi dan eager loading ke objek query builder
+        $query->whereHas('currentTrack', function ($q) use ($userRole) {
+            $q->where('to_position', $userRole);
         })
             ->whereIn('status', ['diterima'])
             ->orderBy('tgl_pengajuan', 'desc')
             ->orderBy('created_at', 'desc')
-            ->with('mitra', 'currentTrack.actorUser')
-            ->get();
+            ->with('mitra', 'currentTrack.actorUser');
+
+        // Lakukan pagination pada objek query builder
+        $proposals = $query->paginate(10);
+
+        $proposals->appends(request()->except('page'));
 
         return view('Pages.Proposal.proposal-terbaru', compact('proposals'));
     }
@@ -432,106 +457,164 @@ class ProposalController extends Controller
     // FUNGSI UBAH STATUS
     public function ubahStatus(Request $request, $id)
     {
-        $request->validate([
+        $actor = Auth::user();
+        $actorRole = strtolower($actor->role);
+
+        Log::info('--- ubahStatus START (Original Code Debug) ---');
+        Log::info('Actor Role: ' . $actorRole);
+        Log::info('Request All Data: ' . json_encode($request->all())); // Pastikan ini aktif!
+
+        $validationRules = [
             'posisiProposal' => 'nullable|string',
-            'statusProposal' => 'required|string|in:diterima,diproses,disetujui,ditolak,pending,selesai,cancel',
+            'status' => 'required|string|in:diterima,diproses,disetujui,ditolak,pending,selesai,cancel',
             'keterangan' => 'nullable|string|max:255',
             'is_finished_action' => 'nullable|boolean',
-        ]);
+        ];
+
+        $canEditKategori = in_array($actorRole, ['backoffice', 'superadmin']);
+        Log::info('Can Edit Kategori (di controller): ' . ($canEditKategori ? 'true' : 'false'));
+
+        if ($canEditKategori) {
+            $validationRules['kategoriBerkas'] = 'nullable|string|in:undangan,peminjaman,BantuanDana,lainnya';
+        } else {
+            $validationRules['kategoriBerkas'] = 'nullable|string';
+        }
+
+        $request->validate($validationRules);
 
         $proposal = Proposal::findOrFail($id);
         $keterangan = $request->input('keterangan') ?? null;
-        $selectedStatus = $request->input('statusProposal');
+        $selectedStatus = $request->input('status'); // Status yang dipilih dari dropdown
         $nextPositionInput = $request->input('posisiProposal');
-        $actor = Auth::user();
-        $actorRole = strtolower($actor->role);
+        $isFinishedAction = $request->boolean('is_finished_action'); // Ambil dari request
+
+
+        if ($canEditKategori) {
+            Log::info('Mencoba update kategoriBerkas. Nilai dari request: ' . ($request->input('kategoriBerkas') ?? 'NULL'));
+            $proposal->kategoriBerkas = $request->input('kategoriBerkas');
+            Log::info('Nilai kategoriBerkas pada objek proposal setelah assignment: ' . ($proposal->kategoriBerkas ?? 'NULL'));
+        } else {
+            Log::info('Kategori Berkas TIDAK diupdate karena user tidak memiliki izin.');
+        }
+
         $nextPosition = (!empty($nextPositionInput) && strtolower($nextPositionInput) !== $actorRole) ? strtolower($nextPositionInput) : null;
+        Log::info('Calculated Next Position for forwarding: ' . ($nextPosition ?? 'NULL (internal change or same role)'));
 
         $lastTrack = $proposal->currentTrack;
         if ($lastTrack) {
             $lastTrack->update(['is_current' => false]);
+            Log::info('Previous track marked as not current: ' . $lastTrack->id);
         }
 
         $fromPosition = $lastTrack ? $lastTrack->to_position : $actorRole;
+        Log::info('From Position for new track: ' . $fromPosition);
 
-        $finalProposalStatusForModel = $selectedStatus; // Status default yang akan disimpan ke model Proposal
-        $trackLabel = $this->getStatusLabel($selectedStatus); // Label untuk track baru
-        $trackToPosition = $fromPosition; // Posisi tujuan default: tetap di posisi role saat ini
-        $proposal->is_finished = false;
-        if ($selectedStatus === 'cancel') {
-            $proposal->is_finished = true; // Tandai selesai
-            $finalProposalStatusForModel = 'cancel'; // Set status ke ditolak
-            $trackLabel = 'Proposal Dicancel Secara Final oleh ' . ucfirst($actorRole);
-            $keterangan = $keterangan ?? 'Proposal dibatalkan oleh ' . ucfirst($actorRole) . ' dan proses dinyatakan selesai.';
-            $trackToPosition = null; // Tidak ada penerusan lagi jika sudah selesai
-        } elseif ($selectedStatus === 'ditolak') {
+        $finalProposalStatusForModel = $selectedStatus; // Status default, akan diubah oleh logika di bawah
+        $trackLabel = $this->getStatusLabel($selectedStatus);
+        $trackToPosition = $fromPosition; // Default: tetap di posisi aktor saat ini
+        $proposal->is_finished = false; // Default
+
+        Log::info('Initial State: finalStatus=' . $finalProposalStatusForModel . ', trackTo=' . ($trackToPosition ?? 'NULL') . ', isFinished=' . ($proposal->is_finished ? 'true' : 'false'));
+
+        // --- Start Logic for Status Changes ---
+
+        // Case 1: Proposal Dicancel atau Ditolak (Final)
+        if ($selectedStatus === 'cancel' || $selectedStatus === 'ditolak') {
             $proposal->is_finished = true;
-            $finalProposalStatusForModel = 'ditolak';
-            $trackLabel = 'Proposal Ditolak Secara Final oleh ' . ucfirst($actorRole); // Atau label yang sesuai
-            $keterangan = $keterangan ?? 'Proposal ditolak dan proses dinyatakan selesai.';
-            $trackToPosition = null; // Tidak ada penerusan lagi jika sudah selesai
+            $finalProposalStatusForModel = $selectedStatus;
+            $trackLabel = 'Proposal ' . ucfirst($selectedStatus) . ' Secara Final oleh ' . $this->formatRoleName($actorRole);
+            $keterangan = $keterangan ?? 'Proposal ' . $selectedStatus . ' dan proses dinyatakan selesai oleh ' . $this->formatRoleName($actorRole) . '.';
+            $trackToPosition = null; // Tidak ada penerusan lagi
+            Log::info('Logic Branch: Finalized (Cancel/Ditolak)');
         }
-        // Case 1: Proposal ditandai selesai (tombol "Tandai Selesai" diklik)
-        elseif ($request->boolean('is_finished_action')) {
-            $proposal->is_finished = true; // Set flag is_finished menjadi true
-            $trackToPosition = null; // Tidak ada penerusan lagi jika sudah selesai
+        // Case 2: Proposal ditandai selesai (menggunakan tombol is_finished_action)
+        elseif ($isFinishedAction) { // Ini harusnya prioritas jika tombol "selesai" diklik
+            $proposal->is_finished = true;
+            $trackToPosition = null; // Tidak ada penerusan lagi
 
+            // Jika status di dropdown adalah 'ditolak' saat 'selesai' diklik
             if ($selectedStatus === 'ditolak') {
                 $finalProposalStatusForModel = 'ditolak';
-                $trackLabel = 'Proposal Ditolak Secara Final';
+                $trackLabel = 'Proposal Ditolak Secara Final (Melalui Tandai Selesai)';
                 $keterangan = $keterangan ?? 'Proposal ditolak dan proses dinyatakan selesai.';
-            } elseif ($selectedStatus === 'disetujui' || $selectedStatus === 'diproses') {
-                $finalProposalStatusForModel = 'selesai';
-                $trackLabel = 'Proposal Disetujui dan Proses Selesai';
-                $keterangan = $keterangan ?? 'Proposal telah disetujui dan proses selesai.';
-            } else {
+            }
+            // Jika status di dropdown adalah 'disetujui' atau 'diproses' saat 'selesai' diklik
+            elseif ($selectedStatus === 'disetujui' || $selectedStatus === 'diproses') {
+                $finalProposalStatusForModel = 'selesai'; // Jadi 'selesai' di database
+                $trackLabel = 'Proposal ' . ucfirst($selectedStatus) . ' dan Proses Selesai';
+                $keterangan = $keterangan ?? 'Proposal telah ' . $selectedStatus . ' dan proses diselesaikan.';
+            }
+            // Kasus lain saat tombol 'selesai' diklik
+            else {
                 $finalProposalStatusForModel = 'selesai';
                 $trackLabel = 'Proses Proposal Selesai (Manual)';
                 $keterangan = $keterangan ?? 'Proses proposal telah diselesaikan secara manual.';
             }
+            Log::info('Logic Branch: Is Finished Action Triggered');
         }
+        // Case 3: Proposal diteruskan ke posisi role yang BERBEDA
+        // (nextPosition bernilai bukan null, berarti ada role yang berbeda dipilih)
+        elseif ($nextPosition) {
+            $proposal->is_finished = false; // Belum selesai, sedang diteruskan
 
-        // Case 2: Proposal diteruskan ke posisi role yang BERBEDA
-        elseif ($nextPosition) { // Kondisi ini sekarang secara benar memfilter penerusan ke diri sendiri
-            $proposal->is_finished = false;
-
-            if ($selectedStatus === 'pending') {
-                $finalProposalStatusForModel = 'pending'; // Jika diteruskan dengan status pending (misal: untuk revisi)
-            } else {
-                $finalProposalStatusForModel = 'diterima'; // Jika diteruskan (selain pending), masuk ke inbox baru dengan status diterima
-            }
-
-            // Track menuju posisi baru
-            $trackToPosition = $nextPosition;
-
-            if ($selectedStatus === 'pending' && $nextPosition === 'frontoffice') {
-                $trackLabel = 'Proposal Dikembalikan untuk Revisi oleh ' . ucfirst($actorRole);
+            // *** PERBAIKAN PENTING DI SINI ***
+            if ($selectedStatus === 'disetujui') {
+                // Sesuai permintaan: jika status 'disetujui' DAN diteruskan, maka jadi 'diterima' di penerima.
+                $finalProposalStatusForModel = 'diterima';
+                $trackLabel = 'Proposal Disetujui dan Diteruskan ke ' . $this->formatRoleName($nextPosition);
+                $keterangan = $keterangan ?? 'Proposal telah disetujui dan diteruskan ke ' . $this->formatRoleName($nextPosition);
+                Log::info('Logic Branch: Forwarded (Approved, becomes Diterima)');
+            } elseif ($selectedStatus === 'pending' && $nextPosition === 'frontoffice') {
+                // Kasus khusus: dikembalikan untuk revisi ke Front Office
+                $finalProposalStatusForModel = 'pending';
+                $trackLabel = 'Proposal Dikembalikan untuk Revisi oleh ' . $this->formatRoleName($actorRole);
                 $keterangan = $keterangan ?? 'Proposal dikembalikan untuk revisi ke Front Office.';
+                Log::info('Logic Branch: Forwarded (Pending to Frontoffice)');
             } else {
+                // Untuk semua status lain (termasuk 'diproses') saat diteruskan ke posisi berbeda,
+                // status di model akan sama dengan selectedStatus.
+                $finalProposalStatusForModel = $selectedStatus;
                 $actionLabel = $this->getStatusLabel($selectedStatus);
-                $trackLabel = $actionLabel . ' dan Diteruskan ke ' . ucfirst($nextPosition);
-                $keterangan = $keterangan ?? 'Proposal diteruskan dari ' . ucfirst($actorRole) . ' ke ' . ucfirst($nextPosition) . '.';
+                $trackLabel = $actionLabel . ' dan Diteruskan ke ' . $this->formatRoleName($nextPosition);
+                $keterangan = $keterangan ?? 'Proposal diteruskan dari ' . $this->formatRoleName($actorRole) . ' ke ' . $this->formatRoleName($nextPosition) . '.';
+                Log::info('Logic Branch: Forwarded (Status Maintained)');
             }
+            $trackToPosition = $nextPosition; // Target posisi untuk track baru
         }
-
-        // Case 3: Perubahan status internal di role saat ini (tidak ada penerusan ATAU penerusan ke diri sendiri)
+        // Case 4: Perubahan status internal di role saat ini
+        // (nextPosition adalah null, artinya tidak diteruskan ke role berbeda,
+        // dan juga bukan aksi finalisasi/selesai manual)
         else {
             $proposal->is_finished = false;
-            $finalProposalStatusForModel = $selectedStatus;
-            $trackToPosition = $fromPosition;
-            $trackLabel = $this->getStatusLabel($selectedStatus) . ' oleh ' . ucfirst($actorRole);
-            $keterangan = $keterangan ?? 'Status proposal diubah oleh ' . ucfirst($actorRole) . '.';
+            $finalProposalStatusForModel = $selectedStatus; // Status di model akan sesuai pilihan dropdown
+            $trackToPosition = $fromPosition; // Tetap di posisi aktor saat ini
 
-            // Penanganan khusus jika status saat ini menjadi 'diterima'
+            $trackLabel = $this->getStatusLabel($selectedStatus) . ' oleh ' . $this->formatRoleName($actorRole);
+            $keterangan = $keterangan ?? 'Status proposal diubah oleh ' . $this->formatRoleName($actorRole) . '.';
+
+            // Penanganan khusus jika status kembali menjadi 'diterima' (misal: dibuka kembali)
             if ($selectedStatus === 'diterima') {
-                // Jika secara eksplisit diatur ke 'diterima' di role yang sama, ini seperti pembukaan kembali atau penandaan sebagai baru
-                $trackLabel = 'Proposal ' . ucfirst($selectedStatus) . ' oleh ' . ucfirst($actorRole);
-                $keterangan = $keterangan ?? 'Proposal kembali ke status diterima di posisi ' . ucfirst($actorRole) . '.';
+                $trackLabel = 'Proposal ' . ucfirst($selectedStatus) . ' oleh ' . $this->formatRoleName($actorRole);
+                $keterangan = $keterangan ?? 'Proposal kembali ke status diterima di posisi ' . $this->formatRoleName($actorRole) . '.';
             }
+            Log::info('Logic Branch: Internal Status Change (No Forward)');
         }
 
+        // --- End Logic for Status Changes ---
+
+        // Set status pada model proposal sebelum menyimpan
         $proposal->status = $finalProposalStatusForModel;
+
+        Log::info('Final proposal->status BEFORE SAVE: ' . $proposal->status);
+        Log::info('Final proposal->is_finished BEFORE SAVE: ' . ($proposal->is_finished ? 'true' : 'false'));
+        Log::info('Final Track Label: ' . $trackLabel);
+        Log::info('Final Track From Position: ' . $fromPosition);
+        Log::info('Final Track To Position: ' . ($trackToPosition ?? 'NULL'));
+
+        // $proposal->data_updated_at = now();
+        // $proposal->data_updated_by_user_id = $actor->id;
         $proposal->save();
+        Log::info('Proposal saved successfully. New status in DB: ' . $proposal->status);
 
         // Buat entri baru di ProposalTrack
         ProposalTrack::create([
@@ -543,9 +626,16 @@ class ProposalController extends Controller
             'keterangan' => $keterangan,
             'is_current' => true, // Tandai track ini sebagai track aktif/terkini
         ]);
+        Log::info('New ProposalTrack created.');
 
+        Log::info('--- ubahStatus END ---');
 
         return redirect()->route('superadmin.proposal.show', $proposal->id)->with('success', 'Status proposal berhasil diubah.');
+    }
+
+    private function formatRoleName($role)
+    {
+        return RoleFormatter::format($role);
     }
 
     // STATUS YANG TERSEDIA
@@ -597,6 +687,7 @@ class ProposalController extends Controller
             'Status',
             'No Agenda',
             'No surat',
+            'Kategori',
             'Tgl_surat',
             'Perihal',
             'Judul',
@@ -618,6 +709,7 @@ class ProposalController extends Controller
                     $proposal->status,
                     $proposal->agenda_number,
                     $proposal->no_surat,
+                    $proposal->kategoriBerkas,
                     $proposal->tgl_surat,
                     $proposal->perihal,
                     $proposal->judul_berkas,
@@ -645,27 +737,32 @@ class ProposalController extends Controller
         $proposal = Proposal::findOrFail($id);
         return view('Pages.Proposal.form-ceklis', compact('proposal'));
     }
+    public function formUndangan($id)
+    {
+        $proposal = Proposal::findOrFail($id);
+        return view('Pages.Proposal.form-undangan', compact('proposal'));
+    }
+    public function formPeminjaman($id)
+    {
+        $proposal = Proposal::findOrFail($id);
+        return view('Pages.Proposal.form-peminjaman', compact('proposal'));
+    }
     public function edit($id)
     {
         $user = Auth::user();
         $userRole = strtolower($user->role);
-
-        // Urutkan tracks dari yang paling lama ke yang terbaru
         $proposal = Proposal::with(['tracks' => function ($query) {
             $query->orderBy('created_at', 'asc');
         }, 'tracks.actorUser', 'mitra'])->findOrFail($id);
 
-        $currentTrack = $proposal->currentTrack; // Dapatkan track terakhir yang aktif
+        $currentTrack = $proposal->currentTrack;
 
-        // --- Logika Akses Proposal (Akses ditolak jika tidak memiliki izin) ---
         if ($userRole !== 'superadmin' && $userRole !== 'ketuaumum') {
             $hasAccess = false;
 
-            // Kondisi 1: Proposal saat ini berada di posisi user
             if ($currentTrack && $currentTrack->to_position === $userRole) {
                 $hasAccess = true;
             }
-            // Kondisi 2: User adalah pengaju proposal asli (misalnya Front Office yang pertama kali mengajukan)
             if ($proposal->user_id === $user->id) {
                 $hasAccess = true;
             }
@@ -692,7 +789,7 @@ class ProposalController extends Controller
     public function update(Request $request, Proposal $proposal)
     {
         $validatedData = $request->validate([
-            'judul_berkas' => 'required|string|max:255',
+            'judul_berkas' => 'nullable|string|max:255',
             'pengaju' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'no_surat' => 'required|string|max:255',
@@ -801,7 +898,7 @@ class ProposalController extends Controller
 
         // >>> PERBAIKI BAGIAN INI: TAMBAHKAN 'user_id' KE DALAM ARRAY UPDATE
         $proposal->update([
-            'judul_berkas' => $validatedData['judul_berkas'],
+            'judul_berkas' => $validatedData['judul_berkas'] ?? '',
             'pengaju' => $validatedData['pengaju'],
             'no_surat' => $validatedData['no_surat'],
             'tgl_surat' => $validatedData['tgl_surat'],
@@ -819,7 +916,7 @@ class ProposalController extends Controller
             'mitra_id' => $mitraId,
             'user_id' => $userLoggedInId,
             'data_updated_at' => Carbon::now(),
-        'data_updated_by_user_id' => Auth::id(),
+            'data_updated_by_user_id' => Auth::id(),
         ]);
 
         Log::info('DEBUG INFO: Proposal successfully updated. Updated user_id in DB should be: ' . $userLoggedInId);

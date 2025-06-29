@@ -25,13 +25,14 @@
     <table>
         <thead>
             <tr>
-                <td class="header-logo" style="width: 15%; text-align: center; vertical-align: middle; border: 1px solid black; padding: 5px;">
+                <td >
                     <img
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSL3i6VHFbddiBnbZrqHoPptmuLaSezDgSFag&s"
                         alt="Logo Koni Kota Bandung"
                         class="logo"
-                        style="width: 60px; height: auto; display: block; margin: 0 auto;" />
-                    <p>KOTA BANDUNG</p>
+                        {{-- Hapus inline style width dan height di sini --}}
+                        style="display: block; margin: 0 auto;" /> {{-- Hanya sisakan display dan margin --}}
+               
                 </td>
                 <td class="header-title">
                     <h3>KARTU DISPOSISI</h3>
@@ -135,7 +136,7 @@
                             <label class="form-check-label" for="wkSekretarisISU">Wk. Sekretaris I</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="wkSekretarisIISU" checked />
+                            <input class="form-check-input" type="checkbox" id="wkSekretarisIISU" />
                             <label class="form-check-label" for="wkSekretarisIISU">Wk. Sekretaris II</label>
                         </div>
                         <div class="form-check">
@@ -291,12 +292,12 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const generateButton = document.getElementById('generateAgendaButton');
         const agendaNumberDisplay = document.getElementById('agendaNumberDisplay');
 
         if (generateButton) {
-            generateButton.addEventListener('click', function () {
+            generateButton.addEventListener('click', function() {
                 const url = generateButton.dataset.url;
 
                 if (!confirm('Apakah Anda yakin ingin meng-generate nomor agenda untuk proposal ini?')) {
@@ -307,35 +308,35 @@
                 generateButton.disabled = true;
 
                 fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(errorData => {
-                            throw new Error(errorData.message || 'Terjadi kesalahan.');
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    agendaNumberDisplay.innerText = data.agenda_number;
-                    alert(data.message);
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(errorData => {
+                                throw new Error(errorData.message || 'Terjadi kesalahan.');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        agendaNumberDisplay.innerText = data.agenda_number;
+                        alert(data.message);
 
-                    generateButton.innerText = 'Nomor Agenda Sudah Digenerate';
-                    generateButton.classList.remove('btn-primary');
-                    generateButton.classList.add('btn-success');
-                    generateButton.disabled = true;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan saat memproses: ' + error.message);
-                    generateButton.innerText = 'Generate No Agenda';
-                    generateButton.disabled = false;
-                });
+                        generateButton.innerText = 'Nomor Agenda Sudah Digenerate';
+                        generateButton.classList.remove('btn-primary');
+                        generateButton.classList.add('btn-success');
+                        generateButton.disabled = true;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat memproses: ' + error.message);
+                        generateButton.innerText = 'Generate No Agenda';
+                        generateButton.disabled = false;
+                    });
             });
         }
     });

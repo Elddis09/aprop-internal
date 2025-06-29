@@ -80,7 +80,11 @@ class FoController extends Controller
             ->where('status_label', 'like', '%Disetujui%') // Menangkap 'Proposal Disetujui' atau 'Proposal Disetujui dan Diteruskan'
             ->count();
 
-
+        $pendingOlehFO = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
+            $query->where('to_position', $userRole);
+        })
+            ->where('status', 'pending') // Spesifik untuk status 'pending'
+            ->count();
         $proposalCancelFO = Proposal::where('status', 'cancel')
             ->where('is_finished', true)
             ->whereHas('currentTrack', function ($query) use ($user) {
@@ -101,6 +105,7 @@ class FoController extends Controller
             'dalamProsesOlehFO',
             'proposalSelesaiDiajukanFO',
             'proposalCancelFO',
+            'pendingOlehFO'
         ));
     }
     // Logout

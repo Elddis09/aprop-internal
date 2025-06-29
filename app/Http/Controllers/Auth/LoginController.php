@@ -33,6 +33,8 @@ class LoginController extends Controller
                 return redirect('/dashboard-admin');
             }
         }
+
+       return back()->with('error', 'Username atau kata sandi yang Anda masukkan salah. Silakan coba lagi.')->onlyInput('username');
     }
 
 
