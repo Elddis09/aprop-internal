@@ -89,7 +89,7 @@
                                                 @elseif($lowerStatus == 'cancel' || $lowerStatus == 'dibatalkan')
                                                 <span class="badge badge-danger">{{ $proposal->status }}</span>
                                                 @elseif($lowerStatus == 'selesai')
-                                                <span class="badge badge-primary">{{ $proposal->status }}</span>
+                                                <span class="badge badge-success">{{ $proposal->status }}</span>
                                                 @else
                                                 <span class="badge badge-info">{{ $proposal->status }}</span>
                                                 @endif
