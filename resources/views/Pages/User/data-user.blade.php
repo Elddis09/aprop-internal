@@ -86,6 +86,7 @@
                                         <td><span class="badge bg-success">{{ $user->role }}</span></td>
 
                                         <td>
+                                            <a href="{{ route('superadmin.user.edit', $user->id) }}" class="btn btn-sm btn-info text-white">Edit</a></a>
 
                                             <form action="{{ route('superadmin.user.delete', $user->id) }}" method="POST" class="d-inline">
                                                 @csrf

@@ -171,11 +171,11 @@
                                     </div>
                                     <div class="cbp_tmlabel">
                                         @if ($track->status_label === 'Proposal diajukan dan diterima' && $track->actorUser)
-                                        <span>Proposal diajukan dan diterima oleh {{ $track->actorUser->name }}</span>
+                                        <span>Proposal diajukan dan diterima {{ $track->actorUser->name }}</span>
                                         @else
                                         <span>{{ $track->status_label }}</span>
                                         @if ($track->actorUser)
-                                        oleh <a href="javascript:void(0);">{{ $track->actorUser->name }}</a>
+                                        <a href="javascript:void(0);">{{ $track->actorUser->name }}</a>
                                         @else
                                         oleh Sistem
                                         @endif

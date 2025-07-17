@@ -84,6 +84,10 @@
                                     <option value="ketuaumum">Ketua Umum</option>
                                     <option value="keuangan">Keuangan</option>
                                     <option value="bai">BAI</option>
+                                    <option value="stafumum">Staf Umum</option>
+                                    <option value="bidangumum">Bidang Umum</option>
+                                    <option value="sekretaristiga">Sekretaris III</option>
+                                    <option value="ketuatiga">Ketua III</option>
                                 </select>
                             </div>
 

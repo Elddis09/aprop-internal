@@ -522,7 +522,7 @@ class ProposalController extends Controller
         if ($selectedStatus === 'cancel' || $selectedStatus === 'ditolak') {
             $proposal->is_finished = true;
             $finalProposalStatusForModel = $selectedStatus;
-            $trackLabel = 'Proposal ' . ucfirst($selectedStatus) . ' Secara Final oleh ' . $this->formatRoleName($actorRole);
+            $trackLabel = 'Proposal di ' . ucfirst($selectedStatus) . ' Secara Final oleh ' ;
             $keterangan = $keterangan ?? 'Proposal ' . $selectedStatus . ' dan proses dinyatakan selesai oleh ' . $this->formatRoleName($actorRole) . '.';
             $trackToPosition = null; // Tidak ada penerusan lagi
             Log::info('Logic Branch: Finalized (Cancel/Ditolak)');
@@ -561,13 +561,13 @@ class ProposalController extends Controller
             if ($selectedStatus === 'disetujui') {
                 // Sesuai permintaan: jika status 'disetujui' DAN diteruskan, maka jadi 'diterima' di penerima.
                 $finalProposalStatusForModel = 'diterima';
-                $trackLabel = 'Proposal Disetujui dan Diteruskan ke ' . $this->formatRoleName($nextPosition);
-                $keterangan = $keterangan ?? 'Proposal telah disetujui dan diteruskan ke ' . $this->formatRoleName($nextPosition);
+                $trackLabel = 'Proposal Disetujui dan Diteruskan ke ' . $this->formatRoleName($nextPosition) . ' oleh ' ;
+                $keterangan = $keterangan ?? 'Proposal telah disetujui dan diteruskan ke ' . $this->formatRoleName($nextPosition) ;
                 Log::info('Logic Branch: Forwarded (Approved, becomes Diterima)');
             } elseif ($selectedStatus === 'pending' && $nextPosition === 'frontoffice') {
                 // Kasus khusus: dikembalikan untuk revisi ke Front Office
                 $finalProposalStatusForModel = 'pending';
-                $trackLabel = 'Proposal Dikembalikan untuk Revisi oleh ' . $this->formatRoleName($actorRole);
+                $trackLabel = 'Proposal Dikembalikan untuk Revisi oleh ' ;
                 $keterangan = $keterangan ?? 'Proposal dikembalikan untuk revisi ke Front Office.';
                 Log::info('Logic Branch: Forwarded (Pending to Frontoffice)');
             } else {
@@ -589,12 +589,12 @@ class ProposalController extends Controller
             $finalProposalStatusForModel = $selectedStatus; // Status di model akan sesuai pilihan dropdown
             $trackToPosition = $fromPosition; // Tetap di posisi aktor saat ini
 
-            $trackLabel = $this->getStatusLabel($selectedStatus) . ' oleh ' . $this->formatRoleName($actorRole);
+            $trackLabel = $this->getStatusLabel($selectedStatus) . ' oleh ' ;
             $keterangan = $keterangan ?? 'Status proposal diubah oleh ' . $this->formatRoleName($actorRole) . '.';
 
             // Penanganan khusus jika status kembali menjadi 'diterima' (misal: dibuka kembali)
             if ($selectedStatus === 'diterima') {
-                $trackLabel = 'Proposal ' . ucfirst($selectedStatus) . ' oleh ' . $this->formatRoleName($actorRole);
+                $trackLabel = 'Proposal ' . ucfirst($selectedStatus) . ' oleh ' ;
                 $keterangan = $keterangan ?? 'Proposal kembali ke status diterima di posisi ' . $this->formatRoleName($actorRole) . '.';
             }
             Log::info('Logic Branch: Internal Status Change (No Forward)');

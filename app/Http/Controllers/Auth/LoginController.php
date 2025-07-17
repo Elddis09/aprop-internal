@@ -16,13 +16,18 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        // Validasi input
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
         ]);
+
         $credentials = $request->only('username', 'password');
-        if (Auth::attempt($credentials)) {
+
+        $attempt = Auth::attempt($credentials);
+        if ($attempt) {
             $request->session()->regenerate();
+            session(['password_checked_at' => now()]);
 
             $user = Auth::user();
             $role = strtolower($user->role);
@@ -34,7 +39,8 @@ class LoginController extends Controller
             }
         }
 
-       return back()->with('error', 'Username atau kata sandi yang Anda masukkan salah. Silakan coba lagi.')->onlyInput('username');
+        return back()->with('error', 'Username atau kata sandi yang Anda masukkan salah. Silakan coba lagi.')
+            ->onlyInput('username');
     }
 
 

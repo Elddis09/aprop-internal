@@ -156,6 +156,60 @@ class SuperadminController extends Controller
         return view('Pages.User.data-user', compact('users'));
     }
 
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+
+        if (auth()->user()->role !== 'superadmin') {
+            abort(403, 'Unauthorized access.');
+        }
+
+        return view('Pages.user.edit-user', compact('user'));
+    }
+
+
+public function update(Request $request, $id)
+{
+    $user = User::findOrFail($id);
+
+    $validated = $request->validate([
+        'name' => 'required|string',
+        'username' => 'required|string|unique:users,username,' . $user->id,
+        'role' => 'required|string',
+        'email' => 'nullable|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|min:6',
+    ]);
+
+    $user->name = $validated['name'];
+    $user->username = $validated['username'];
+    $user->role = $validated['role'];
+
+    if (!empty($validated['email'])) {
+        $user->email = $validated['email'];
+    }
+
+    // Jika password diisi, update password & waktu perubahan
+    if (!empty($validated['password'])) {
+        $user->password = Hash::make($validated['password']);
+        $user->password_changed_at = now();
+    }
+
+    $user->save();
+
+    return redirect()->route('superadmin.data-user')->with('success', 'User berhasil diperbarui.');
+}
+
+// public function resetPassword($id)
+// {
+//     $user = User::findOrFail($id);
+//     $user->password = Hash::make('123456');
+//     $user->password_changed_at = now(); 
+//     $user->save();
+
+//     return redirect()->route('superadmin.data-user')->with('success', 'Password berhasil direset ke default (123456).');
+// }
+
     // DELETE USER
     public function deleteUser($id)
     {
