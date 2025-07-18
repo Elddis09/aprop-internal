@@ -119,7 +119,7 @@
                                     @else
                                     <span>{{ $track->status_label }}</span>
                                     @if ($track->actorUser)
-                                    oleh <a href="javascript:void(0);">{{ $track->actorUser->name }}</a>
+                                    <a href="javascript:void(0);">{{ $track->actorUser->name }}</a>
                                     @else
                                     oleh Sistem
                                     @endif
