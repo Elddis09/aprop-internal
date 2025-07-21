@@ -19,6 +19,12 @@
             <div class="block-header">
                 <div class="row clearfix">
                     <div class="col-lg-5 col-md-5 col-sm-12">
+                        @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show shadow rounded w-100" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            {{ session('success') }}
+                        </div>
+                        @endif
                         <h2>Data Proposal</h2>
                         <ul class="breadcrumb padding-0">
                             <li class="breadcrumb-item">
@@ -198,6 +204,17 @@
 </div>
 
 <script>
+    setTimeout(() => {
+        const alert = document.querySelector('.alert');
+        if (alert) {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(() => alert.remove(), 20);
+        }
+    }, 2000);
+</script>
+
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
         const searchButton = document.getElementById('searchButton');
@@ -229,13 +246,8 @@
 </script>
 <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
 <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/knob.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/jvectormap.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/morrisscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/sparkline.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/doughnut.bundle.js') }}"></script>
-
 <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
+
 <script src="{{ asset('assets/js/pages/index.js') }}"></script>
 
 </body>

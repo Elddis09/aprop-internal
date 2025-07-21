@@ -229,13 +229,8 @@ use App\Models\Mitra;
 
 <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
 <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/knob.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/jvectormap.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/morrisscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/sparkline.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/doughnut.bundle.js') }}"></script>
-
 <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
+
 <script src="{{ asset('assets/js/pages/index.js') }}"></script>
 </body>
 

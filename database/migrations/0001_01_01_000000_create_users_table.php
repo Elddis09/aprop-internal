@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('role')->default('frontoffice');
             $table->timestamp('password_changed_at')->nullable();
-            $table->rememberToken(); // penting untuk auth
+            $table->rememberToken(); 
             $table->timestamps();
         });
 

@@ -62,29 +62,29 @@ class SuperadminController extends Controller
         $kotakMasukRoleSaatIni = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
             $query->where('to_position', $userRole);
         })
-            ->whereIn('status', ['diterima', 'disetujui']) // <--- Ubah di sini
+            ->whereIn('status', ['diterima', 'disetujui']) 
             ->where('is_finished', false)
             ->count();
 
         $dalamProsesOlehRoleIni = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
             $query->where('to_position', $userRole);
         })
-            ->where('status', 'diproses') // Hanya status 'diproses'
+            ->where('status', 'diproses') 
             ->count();
         $pendingOlehRoleIni = Proposal::whereHas('currentTrack', function ($query) use ($userRole) {
             $query->where('to_position', $userRole);
         })
-            ->where('status', 'pending') // Spesifik untuk status 'pending'
+            ->where('status', 'pending') 
             ->count();
         $disetujuiOlehRoleIni = ProposalTrack::where('actor_id', $user->id)
-            ->where('status_label', 'like', '%Disetujui%') // Menangkap 'Proposal Disetujui' atau 'Proposal Disetujui dan Diteruskan'
+            ->where('status_label', 'like', '%Disetujui%') 
             ->count();
 
         $ditolakOlehRoleIni = ProposalTrack::where('actor_id', $user->id)
-            ->where('status_label', 'like', '%Ditolak%') // Menangkap 'Proposal Ditolak' atau 'Proposal Ditolak Secara Final'
+            ->where('status_label', 'like', '%Ditolak%') 
             ->count();
         $dicancelOlehRoleIni = ProposalTrack::where('actor_id', $user->id)
-            ->where('status_label', 'like', '%cancel%') // Menangkap 'Proposal Ditolak' atau 'Proposal Ditolak Secara Final'
+            ->where('status_label', 'like', '%cancel%')
             ->count();
 
         return view('Pages.Dashboard.dashboard-admin', compact(

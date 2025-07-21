@@ -67,8 +67,8 @@
                                     @if(Auth::check() && (Auth::user()->role === 'bidangumum' || Auth::user()->role === 'sekretaristiga' || Auth::user()->role === 'stafumum') && $proposal->kategoriBerkas === 'peminjaman')
                                     <a href="{{ route('superadmin.proposal.form-peminjaman', $proposal->id) }}" class="btn btn-primary">Form Peminjaman</a>
                                     @endif
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#qrCodeModal">Share</button>
 
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#qrCodeModal">Share</button>
                                 </div>
 
                                 <div class="col-md-6">
@@ -137,7 +137,7 @@
                                 <h5 class="fw-bold mb-0">Status Berkas</h5>
                             </div>
                             <div class="col text-right">
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateStatusModal" {{ !$canUpdateStatus ? 'disabled' : '' }}>Ubah Status</button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateStatusModal" {{ !$canUpdateStatus ? 'disabled' : '' }}>Ubah Status</button>
                             </div>
                         </div>
 
@@ -363,6 +363,8 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

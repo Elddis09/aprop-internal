@@ -4,29 +4,18 @@
 
 @php
 use App\Models\Mitra;
-use App\Models\Cabor; // Pastikan model Cabor di-import di Blade jika Anda membutuhkannya langsung, meskipun tidak untuk kasus ini.
-// Menguraikan string jenis_berkas menjadi array untuk pengecekan checkbox
+use App\Models\Cabor;
 $jenisBerkasArray = explode(',', $proposal->jenis_berkas ?? '');
 
-
-
-
-// Tentukan nilai yang harus terpilih di dropdown
 $selectedValue = '';
-$isFound = false; // Flag untuk menandai apakah sudah ada kecocokan
-
-// PRIORITAS 1: Cek apakah ini Mitra yang sudah ada berdasarkan mitra_id di proposal
+$isFound = false;
 if ($proposal->mitra_id) {
     $selectedValue = 'mitra-' . $proposal->mitra_id;
     $isFound = true;
 } else {
-    // PRIORITAS 2: Jika tidak ada mitra_id, coba cocokkan dengan NAMA Cabang Olahraga dari API
-    // Asumsi: proposal->cabang_olahraga berisi NAMA cabor jika itu berasal dari API/data custom
     foreach ($caborData as $cabor) {
-        // Penting: Pastikan perbandingan ini PERSIS sama dengan cara data disimpan di DB.
-        // strtolower(trim()) digunakan untuk mengatasi perbedaan casing dan spasi ekstra.
         if (trim(strtolower($proposal->cabang_olahraga)) == trim(strtolower($cabor->nama_cabor))) {
-            $selectedValue = $cabor->api_cabor_id; // Nilai option adalah api_cabor_id
+            $selectedValue = $cabor->api_cabor_id;
             $isFound = true;
             break; // Hentikan loop jika sudah cocok
         }
@@ -254,6 +243,8 @@ $selectedValue = old('cabang_olahraga', $selectedValue);
     </main>
 </div>
 
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const caborSelect = document.getElementById('cabang_olahraga');
@@ -279,13 +270,8 @@ $selectedValue = old('cabang_olahraga', $selectedValue);
 
 <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
 <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/knob.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/jvectormap.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/morrisscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/sparkline.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/doughnut.bundle.js') }}"></script>
-
 <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
+
 <script src="{{ asset('assets/js/pages/index.js') }}"></script>
 </body>
 

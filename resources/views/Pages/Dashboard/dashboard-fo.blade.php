@@ -60,46 +60,46 @@
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <a href="{{ route('klien.proposal.data-proposal') }}">
-                    <div class="card text-center">
-                        <div class="body">
-                            <p class="m-b-20"><i class="zmdi zmdi-mail-send zmdi-hc-3x col-teal"></i></p>
-                            <span>Diproses (Oleh Saya)</span>
-                            <h3 class="m-b-10">{{ $dalamProsesOlehFO }}</h3>
+                        <div class="card text-center">
+                            <div class="body">
+                                <p class="m-b-20"><i class="zmdi zmdi-mail-send zmdi-hc-3x col-teal"></i></p>
+                                <span>Diproses (Oleh Saya)</span>
+                                <h3 class="m-b-10">{{ $dalamProsesOlehFO }}</h3>
+                            </div>
                         </div>
-                    </div>
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <a href="{{ route('klien.proposal.data-proposal') }}">
-                    <div class="card text-center">
-                        <div class="body">
-                            <p class="m-b-20"><i class="zmdi zmdi-check-all zmdi-hc-3x col-deep-purple"></i></p>
-                            <span>Selesai (Diajukan Oleh Saya)</span>
-                            <h3 class="m-b-10">{{ $proposalSelesaiDiajukanFO }}</h3>
+                        <div class="card text-center">
+                            <div class="body">
+                                <p class="m-b-20"><i class="zmdi zmdi-check-all zmdi-hc-3x col-deep-purple"></i></p>
+                                <span>Selesai (Diajukan Oleh Saya)</span>
+                                <h3 class="m-b-10">{{ $proposalSelesaiDiajukanFO }}</h3>
+                            </div>
                         </div>
-                    </div>
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <a href="{{ route('klien.proposal.data-proposal') }}">
-                    <div class="card text-center">
-                        <div class="body">
-                            <p class="m-b-20"><i class="zmdi zmdi-alert-circle zmdi-hc-3x col-orange"></i></p>
-                            <span>Pending (Oleh Saya)</span>
-                            <h3 class="m-b-10">{{ $pendingOlehFO }}</h3>
+                        <div class="card text-center">
+                            <div class="body">
+                                <p class="m-b-20"><i class="zmdi zmdi-alert-circle zmdi-hc-3x col-orange"></i></p>
+                                <span>Pending (Oleh Saya)</span>
+                                <h3 class="m-b-10">{{ $pendingOlehFO }}</h3>
+                            </div>
                         </div>
-                    </div>
                     </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <a href="{{ route('klien.proposal.data-proposal') }}">
-                    <div class="card text-center">
-                        <div class="body">
-                            <p class="m-b-20"><i class="zmdi zmdi-alert-triangle zmdi-hc-3x col-red"></i></p>
-                            <span>Canceled (Oleh Saya)</span>
-                            <h3 class="m-b-10">{{ $proposalCancelFO }}</h3>
+                        <div class="card text-center">
+                            <div class="body">
+                                <p class="m-b-20"><i class="zmdi zmdi-alert-triangle zmdi-hc-3x col-red"></i></p>
+                                <span>Canceled (Oleh Saya)</span>
+                                <h3 class="m-b-10">{{ $proposalCancelFO }}</h3>
+                            </div>
                         </div>
-                    </div>
                     </a>
                 </div>
             </div>
@@ -189,14 +189,8 @@
 
 <script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
 <script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/knob.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/jvectormap.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/morrisscripts.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/sparkline.bundle.js') }}"></script>
-<script src="{{ asset('assets/bundles/doughnut.bundle.js') }}"></script>
 <script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
 <script src="{{ asset('assets/js/pages/index.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

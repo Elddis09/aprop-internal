@@ -66,11 +66,9 @@
  </footer>
 
  <!-- Jquery Core Js -->
- <script src="assets/bundles/libscripts.bundle.js"></script>
- <script src="assets/bundles/vendorscripts.bundle.js"></script>
-
-
- <script src="assets/bundles/mainscripts.bundle.js"></script>
+<script src="{{ asset('assets/bundles/libscripts.bundle.js') }}"></script>
+<script src="{{ asset('assets/bundles/vendorscripts.bundle.js') }}"></script>
+<script src="{{ asset('assets/bundles/mainscripts.bundle.js') }}"></script>
  <script src="assets/js/pages/index.js"></script>
  </body>
 

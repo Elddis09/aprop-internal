@@ -9,7 +9,6 @@ use App\Models\ProposalTrack;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Services\ProposalPdfGenerator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -129,10 +128,10 @@ class ProposalController extends Controller
             'no_surat' => 'required|string|max:255',
             'perihal' => 'required|string|max:255',
             'jenis_berkas' => 'required|array',
-            'jenis_berkas.*' => 'in:surat,proposal,barang', // Memastikan jenis berkas valid
+            'jenis_berkas.*' => 'in:surat,proposal,barang',
             'pengcab' => 'required|string|max:255',
             'tgl_surat' => 'required|date',
-            'cabang_olahraga' => 'required|string', // Bisa ID cabor, 'mitra-ID', atau 'lainnya'
+            'cabang_olahraga' => 'required|string',
             'no_telepon' => 'required|string|max:20',
             'email' => 'nullable|email|max:255',
             'alamat' => 'required|string',
@@ -149,36 +148,30 @@ class ProposalController extends Controller
             ],
         ]);
 
-        $mitraId = null; // Akan menyimpan ID Mitra jika dipilih
-        $cabangOlahragaForProposal = null; // Akan menyimpan nilai final untuk kolom 'cabang_olahraga' di tabel proposal
-
-        // Log input request untuk debugging
-        Log::info('Store Method - Request Input:', $request->all());
+        $mitraId = null; 
+        $cabangOlahragaForProposal = null; 
 
         // Logika untuk menentukan nilai 'cabang_olahraga' dan 'mitra_id' yang akan disimpan
-
         // Prioritas 1: Jika pemohon memilih 'lainnya' dan mengisi nama_mitra_baru (Membuat Mitra Baru)
         if ($validatedData['cabang_olahraga'] == 'lainnya' && !empty($validatedData['nama_mitra_baru'])) {
             $namaMitraBaru = $validatedData['nama_mitra_baru'];
-            Log::info('Store Method - Menangani opsi "lainnya" (Mitra Baru). Nama Mitra Baru: ' . $namaMitraBaru);
 
             // Cek apakah mitra dengan nama tersebut sudah ada
             $existingMitra = Mitra::where('nama', $namaMitraBaru)->first();
 
             if ($existingMitra) {
-                // Jika sudah ada, gunakan mitra yang ada
                 Log::info('Store Method - Mitra sudah ada. ID: ' . $existingMitra->id . ' Nama: ' . $existingMitra->nama);
                 $mitraId = $existingMitra->id;
-                $cabangOlahragaForProposal = $existingMitra->nama; // Simpan nama mitra di kolom `cabang_olahraga`
+                $cabangOlahragaForProposal = $existingMitra->nama; 
             } else {
-                // Jika belum ada, buat mitra baru
+    
                 Log::info('Store Method - Membuat Mitra baru. Nama: ' . $namaMitraBaru);
                 $mitra = new Mitra();
                 $mitra->nama = $namaMitraBaru;
-                $mitra->tipe = 'Non-Koni'; // Atur tipe mitra, sesuaikan jika ada tipe lain
+                $mitra->tipe = 'Non-Koni';
                 $mitra->save();
                 $mitraId = $mitra->id;
-                $cabangOlahragaForProposal = $mitra->nama; // Simpan nama mitra di kolom `cabang_olahraga`
+                $cabangOlahragaForProposal = $mitra->nama; 
                 Log::info('Store Method - Mitra baru dibuat. ID: ' . $mitra->id . ' Nama: ' . $mitra->nama);
             }
         }
@@ -194,7 +187,7 @@ class ProposalController extends Controller
                 // Jika mitra ditemukan, gunakan ID dan namanya
                 Log::info('Store Method - Mitra ditemukan berdasarkan ID: ' . $foundMitra->id . ' Nama: ' . $foundMitra->nama);
                 $mitraId = $foundMitra->id;
-                $cabangOlahragaForProposal = $foundMitra->nama; // Simpan nama mitra di kolom `cabang_olahraga`
+                $cabangOlahragaForProposal = $foundMitra->nama;
             } else {
                 // Jika ID mitra tidak valid
                 Log::warning('Store Method - Mitra tidak ditemukan untuk ID: ' . $mitraOnlyId);
@@ -213,7 +206,7 @@ class ProposalController extends Controller
 
             if ($foundCabor) {
                 Log::info('Store Method - Cabor ditemukan di DB lokal: ' . $foundCabor->nama_cabor);
-                // INI PERUBAHAN UTAMA: SIMPAN NAMA CABANG OLAHRAGA BUKAN ID-NYA
+         
                 $cabangOlahragaForProposal = $foundCabor->nama_cabor; // <-- UBAH KE NAMA CABOR
             } else {
                 // Jika ID cabor tidak ditemukan di database lokal
@@ -229,14 +222,10 @@ class ProposalController extends Controller
             $cabangOlahragaForProposal = $validatedData['cabang_olahraga'];
         }
 
-        // Log nilai akhir sebelum menyimpan proposal
-        Log::info('Store Method - Final mitraId sebelum membuat Proposal: ' . ($mitraId ?? 'NULL'));
-        Log::info('Store Method - Final cabangOlahragaForProposal sebelum membuat Proposal: ' . ($cabangOlahragaForProposal ?? 'NULL'));
 
         // Menggabungkan array jenis_berkas menjadi string koma-terpisah
         $jenisBerkas = implode(',', $validatedData['jenis_berkas']);
 
-        // Mengunggah file utama jika ada
         $filePath = null;
         if ($request->hasFile('file_utama')) {
             $filePath = $request->file('file_utama')->store('proposals', 'public');
@@ -244,42 +233,37 @@ class ProposalController extends Controller
 
         // Membuat entri Proposal baru di database
         $proposal = Proposal::create([
-            'user_id' => Auth::id(), // ID pengguna yang sedang login
+            'user_id' => Auth::id(),
             'judul_berkas' => $validatedData['judul_berkas'] ?? '',
             'pengaju' => $validatedData['pengaju'],
             'no_surat' => $validatedData['no_surat'],
             'tgl_surat' => $validatedData['tgl_surat'],
             'perihal' => $validatedData['perihal'],
             'pengcab' => $validatedData['pengcab'],
-            'agenda_number' => null, // Atur jika ada logika generate nomor agenda
-            'cabang_olahraga' => $cabangOlahragaForProposal, // Menggunakan nilai yang sudah ditentukan di atas
+            'agenda_number' => null, 
+            'cabang_olahraga' => $cabangOlahragaForProposal, 
             'no_telepon' => $validatedData['no_telepon'],
-            'email' => $validatedData['email'] ?? '', // Gunakan null coalescing operator untuk default string kosong
+            'email' => $validatedData['email'] ?? '', 
             'alamat' => $validatedData['alamat'],
             'tgl_pengajuan' => $validatedData['tgl_pengajuan'],
             'file_utama' => $filePath,
             'nama_petugas' => $validatedData['nama_petugas'],
             'jabatan' => $validatedData['jabatan'],
             'jenis_berkas' => $jenisBerkas,
-            'status' => 'diterima', // Status awal proposal
-            'mitra_id' => $mitraId, // Menggunakan ID Mitra yang sudah ditentukan di atas
+            'status' => 'diterima', 
+            'mitra_id' => $mitraId,
         ]);
-
-        // Log informasi proposal yang baru dibuat
-        Log::info('Store Method - Proposal berhasil dibuat. ID: ' . $proposal->id . ', Cabor: ' . $proposal->cabang_olahraga . ', Mitra ID: ' . ($proposal->mitra_id ?? 'NULL') . ', Agenda Number: ' . ($proposal->agenda_number ?? 'NULL'));
 
         // Membuat entri di ProposalTrack untuk melacak status proposal
         ProposalTrack::create([
             'proposal_id' => $proposal->id,
             'status_label' => 'Proposal diajukan dan diterima',
             'actor_id' => Auth::id(),
-            'from_position' => null, // Posisi awal
-            'to_position' => strtolower(Auth::user()->role), // Posisi saat ini (role pengguna)
+            'from_position' => null, 
+            'to_position' => strtolower(Auth::user()->role), 
             'keterangan' => 'Proposal baru diajukan melalui sistem.',
-            'is_current' => true, // Menandakan ini adalah status terakhir
+            'is_current' => true, 
         ]);
-
-        Log::info('Store Method - ProposalTrack berhasil dibuat untuk proposal ID: ' . $proposal->id);
 
         // Redirect ke halaman daftar proposal klien dengan pesan sukses
         return redirect()->route('klien.proposal.data-proposal')->with('success', 'Proposal berhasil dikirim.');
@@ -305,48 +289,41 @@ class ProposalController extends Controller
         $proposal->agenda_number = $nextAgendaNumber;
         $proposal->save();
 
-
-
         return response()->json([
             'message' => 'Nomor agenda berhasil digenerate!',
             'agenda_number' => $nextAgendaNumber
         ]);
     }
 
-    /**
-     * Fungsi logika untuk menghasilkan nomor agenda berikutnya (sebagai string numerik).
-     * Akan mengurutkan secara numerik meskipun kolomnya string.
-     */
-    private function generateNextAgendaNumberLogic(): string // Mengembalikan string
+
+    private function generateNextAgendaNumberLogic(): string 
     {
-        // Ambil proposal terakhir berdasarkan nomor agenda tertinggi,
-        // dengan meng-CAST string ke UNSIGNED INTEGER SAAT ORDERING.
+
         $lastProposal = Proposal::whereNotNull('agenda_number')
-            ->orderByRaw('CAST(agenda_number AS UNSIGNED) DESC') // Ini kunci untuk pengurutan numerik pada string
+            ->orderByRaw('CAST(agenda_number AS UNSIGNED) DESC') 
             ->first();
 
         $nextNumber = 500; // Nomor awal jika belum ada data atau data di bawah 500
 
-        if ($lastProposal && is_numeric($lastProposal->agenda_number)) { // Pastikan nilai yang diambil benar-benar angka
+        if ($lastProposal && is_numeric($lastProposal->agenda_number)) { 
             $lastNumericAgenda = (int)$lastProposal->agenda_number;
             if ($lastNumericAgenda >= 500) {
                 $nextNumber = $lastNumericAgenda + 1;
             }
         }
 
-        return (string) $nextNumber; // Pastikan mengembalikan string
+        return (string) $nextNumber; 
     }
     public function show(string $id)
     {
         $user = Auth::user();
         $userRole = strtolower($user->role);
 
-        // Urutkan tracks dari yang paling lama ke yang terbaru
         $proposal = Proposal::with(['tracks' => function ($query) {
             $query->orderBy('created_at', 'asc');
         }, 'tracks.actorUser', 'mitra', 'dataUpdatedByUser'])->findOrFail($id);
 
-        $currentTrack = $proposal->currentTrack; // Dapatkan track terakhir yang aktif
+        $currentTrack = $proposal->currentTrack; 
 
         // --- Logika Akses Proposal (Akses ditolak jika tidak memiliki izin) ---
         if ($userRole !== 'superadmin' && $userRole !== 'ketuaumum') {
@@ -390,8 +367,6 @@ class ProposalController extends Controller
         // Dropdown 'Diteruskan Kepada' hanya muncul jika status proposal BUKAN 'disetujui', 'ditolak', atau 'selesai'
         if (!in_array($proposal->status, ['disetujui', 'ditolak', 'selesai'])) {
             foreach ($allRoles as $role) {
-                // Jangan tampilkan role user saat ini, role 'superadmin',
-                // dan role yang sudah pernah terlibat dalam track proposal
                 if ($role !== $userRole && $role !== 'superadmin' && !in_array($role, $trackedRoles)) {
                     $availableRolesToForwardTo[] = $role;
                 }
@@ -437,7 +412,6 @@ class ProposalController extends Controller
             });
         }
 
-        // Terapkan semua kondisi dan eager loading ke objek query builder
         $query->whereHas('currentTrack', function ($q) use ($userRole) {
             $q->where('to_position', $userRole);
         })
@@ -462,7 +436,7 @@ class ProposalController extends Controller
 
         Log::info('--- ubahStatus START (Original Code Debug) ---');
         Log::info('Actor Role: ' . $actorRole);
-        Log::info('Request All Data: ' . json_encode($request->all())); // Pastikan ini aktif!
+        Log::info('Request All Data: ' . json_encode($request->all()));
 
         $validationRules = [
             'posisiProposal' => 'nullable|string',
@@ -484,9 +458,9 @@ class ProposalController extends Controller
 
         $proposal = Proposal::findOrFail($id);
         $keterangan = $request->input('keterangan') ?? null;
-        $selectedStatus = $request->input('status'); // Status yang dipilih dari dropdown
+        $selectedStatus = $request->input('status');
         $nextPositionInput = $request->input('posisiProposal');
-        $isFinishedAction = $request->boolean('is_finished_action'); // Ambil dari request
+        $isFinishedAction = $request->boolean('is_finished_action'); 
 
 
         if ($canEditKategori) {
@@ -498,23 +472,19 @@ class ProposalController extends Controller
         }
 
         $nextPosition = (!empty($nextPositionInput) && strtolower($nextPositionInput) !== $actorRole) ? strtolower($nextPositionInput) : null;
-        Log::info('Calculated Next Position for forwarding: ' . ($nextPosition ?? 'NULL (internal change or same role)'));
 
         $lastTrack = $proposal->currentTrack;
         if ($lastTrack) {
             $lastTrack->update(['is_current' => false]);
-            Log::info('Previous track marked as not current: ' . $lastTrack->id);
         }
 
         $fromPosition = $lastTrack ? $lastTrack->to_position : $actorRole;
-        Log::info('From Position for new track: ' . $fromPosition);
 
         $finalProposalStatusForModel = $selectedStatus; // Status default, akan diubah oleh logika di bawah
         $trackLabel = $this->getStatusLabel($selectedStatus);
         $trackToPosition = $fromPosition; // Default: tetap di posisi aktor saat ini
         $proposal->is_finished = false; // Default
 
-        Log::info('Initial State: finalStatus=' . $finalProposalStatusForModel . ', trackTo=' . ($trackToPosition ?? 'NULL') . ', isFinished=' . ($proposal->is_finished ? 'true' : 'false'));
 
         // --- Start Logic for Status Changes ---
 
@@ -525,7 +495,6 @@ class ProposalController extends Controller
             $trackLabel = 'Proposal di ' . ucfirst($selectedStatus) . ' Secara Final oleh ' ;
             $keterangan = $keterangan ?? 'Proposal ' . $selectedStatus . ' dan proses dinyatakan selesai oleh ' . $this->formatRoleName($actorRole) . '.';
             $trackToPosition = null; // Tidak ada penerusan lagi
-            Log::info('Logic Branch: Finalized (Cancel/Ditolak)');
         }
         // Case 2: Proposal ditandai selesai (menggunakan tombol is_finished_action)
         elseif ($isFinishedAction) { // Ini harusnya prioritas jika tombol "selesai" diklik
@@ -550,7 +519,6 @@ class ProposalController extends Controller
                 $trackLabel = 'Proses Proposal Selesai (Manual)';
                 $keterangan = $keterangan ?? 'Proses proposal telah diselesaikan secara manual.';
             }
-            Log::info('Logic Branch: Is Finished Action Triggered');
         }
         // Case 3: Proposal diteruskan ke posisi role yang BERBEDA
         // (nextPosition bernilai bukan null, berarti ada role yang berbeda dipilih)
@@ -563,13 +531,11 @@ class ProposalController extends Controller
                 $finalProposalStatusForModel = 'diterima';
                 $trackLabel = 'Proposal Disetujui dan Diteruskan ke ' . $this->formatRoleName($nextPosition) . ' oleh ' ;
                 $keterangan = $keterangan ?? 'Proposal telah disetujui dan diteruskan ke ' . $this->formatRoleName($nextPosition) ;
-                Log::info('Logic Branch: Forwarded (Approved, becomes Diterima)');
             } elseif ($selectedStatus === 'pending' && $nextPosition === 'frontoffice') {
                 // Kasus khusus: dikembalikan untuk revisi ke Front Office
                 $finalProposalStatusForModel = 'pending';
                 $trackLabel = 'Proposal Dikembalikan untuk Revisi oleh ' ;
                 $keterangan = $keterangan ?? 'Proposal dikembalikan untuk revisi ke Front Office.';
-                Log::info('Logic Branch: Forwarded (Pending to Frontoffice)');
             } else {
                 // Untuk semua status lain (termasuk 'diproses') saat diteruskan ke posisi berbeda,
                 // status di model akan sama dengan selectedStatus.
@@ -577,7 +543,7 @@ class ProposalController extends Controller
                 $actionLabel = $this->getStatusLabel($selectedStatus);
                 $trackLabel = $actionLabel . ' dan Diteruskan ke ' . $this->formatRoleName($nextPosition);
                 $keterangan = $keterangan ?? 'Proposal diteruskan dari ' . $this->formatRoleName($actorRole) . ' ke ' . $this->formatRoleName($nextPosition) . '.';
-                Log::info('Logic Branch: Forwarded (Status Maintained)');
+            
             }
             $trackToPosition = $nextPosition; // Target posisi untuk track baru
         }
@@ -597,7 +563,7 @@ class ProposalController extends Controller
                 $trackLabel = 'Proposal ' . ucfirst($selectedStatus) . ' oleh ' ;
                 $keterangan = $keterangan ?? 'Proposal kembali ke status diterima di posisi ' . $this->formatRoleName($actorRole) . '.';
             }
-            Log::info('Logic Branch: Internal Status Change (No Forward)');
+           
         }
 
         // --- End Logic for Status Changes ---
@@ -605,16 +571,10 @@ class ProposalController extends Controller
         // Set status pada model proposal sebelum menyimpan
         $proposal->status = $finalProposalStatusForModel;
 
-        Log::info('Final proposal->status BEFORE SAVE: ' . $proposal->status);
-        Log::info('Final proposal->is_finished BEFORE SAVE: ' . ($proposal->is_finished ? 'true' : 'false'));
-        Log::info('Final Track Label: ' . $trackLabel);
-        Log::info('Final Track From Position: ' . $fromPosition);
-        Log::info('Final Track To Position: ' . ($trackToPosition ?? 'NULL'));
 
-        // $proposal->data_updated_at = now();
-        // $proposal->data_updated_by_user_id = $actor->id;
+
         $proposal->save();
-        Log::info('Proposal saved successfully. New status in DB: ' . $proposal->status);
+    
 
         // Buat entri baru di ProposalTrack
         ProposalTrack::create([
@@ -626,9 +586,7 @@ class ProposalController extends Controller
             'keterangan' => $keterangan,
             'is_current' => true, // Tandai track ini sebagai track aktif/terkini
         ]);
-        Log::info('New ProposalTrack created.');
-
-        Log::info('--- ubahStatus END ---');
+ 
 
         return redirect()->route('superadmin.proposal.show', $proposal->id)->with('success', 'Status proposal berhasil diubah.');
     }
@@ -818,19 +776,15 @@ class ProposalController extends Controller
         $mitraId = null;
         $cabangOlahragaForProposal = null;
 
-        $userLoggedInId = Auth::id(); // Ambil ID user yang login saat ini
-        Log::info('DEBUG INFO: User ID yang sedang login: ' . $userLoggedInId);
-        Log::info('Update Method - Request Input:', $request->all());
+        $userLoggedInId = Auth::id(); 
 
         // Logika sama persis seperti di store method untuk menentukan mitra_id dan cabang_olahraga
         if ($validatedData['cabang_olahraga'] == 'lainnya' && !empty($validatedData['nama_mitra_baru'])) {
             $namaMitraBaru = $validatedData['nama_mitra_baru'];
-            Log::info('Update Method - Handling "lainnya" option (New Mitra). namaMitraBaru: ' . $namaMitraBaru);
 
             $existingMitra = Mitra::where('nama', $namaMitraBaru)->first();
 
             if ($existingMitra) {
-                Log::info('Update Method - Existing Mitra found. ID: ' . $existingMitra->id);
                 $mitraId = $existingMitra->id;
                 $cabangOlahragaForProposal = $existingMitra->nama;
             } else {
@@ -841,37 +795,29 @@ class ProposalController extends Controller
                 $mitra->save();
                 $mitraId = $mitra->id;
                 $cabangOlahragaForProposal = $mitra->nama;
-                Log::info('Update Method - New Mitra created. ID: ' . $mitra->id);
             }
         } elseif (Str::startsWith($validatedData['cabang_olahraga'], 'mitra-')) {
             $mitraString = $validatedData['cabang_olahraga'];
             $mitraOnlyId = (int) Str::after($mitraString, 'mitra-');
-            Log::info('Update Method - Handling existing Mitra ID string: ' . $mitraString . ', parsed ID: ' . $mitraOnlyId);
 
             $foundMitra = Mitra::find($mitraOnlyId);
 
             if ($foundMitra) {
-                Log::info('Update Method - Existing Mitra found for ID: ' . $foundMitra->id);
                 $mitraId = $foundMitra->id;
                 $cabangOlahragaForProposal = $foundMitra->nama;
             } else {
-                Log::warning('Update Method - Existing Mitra not found for ID: ' . $mitraOnlyId);
                 return redirect()->back()
                     ->withErrors(['cabang_olahraga' => 'Pemohon terdaftar yang dipilih tidak valid.'])
                     ->withInput();
             }
         } elseif (is_numeric($validatedData['cabang_olahraga'])) {
             $caborId = (int) $validatedData['cabang_olahraga'];
-            Log::info('Update Method - Handling numeric cabor ID: ' . $caborId);
 
             $foundCabor = Cabor::where('api_cabor_id', $caborId)->first();
 
             if ($foundCabor) {
-                Log::info('Update Method - Cabor found in local DB: ' . $foundCabor->nama_cabor);
-                // INI YANG DIUBAH DI UPDATE METHOD: Simpan NAMA cabor
                 $cabangOlahragaForProposal = $foundCabor->nama_cabor;
             } else {
-                Log::warning('Update Method - Numeric cabor ID not found in local DB: ' . $caborId);
                 return redirect()->back()
                     ->withErrors(['cabang_olahraga' => 'Cabang olahraga yang dipilih tidak valid atau tidak ditemukan di database lokal.'])
                     ->withInput();
@@ -881,8 +827,6 @@ class ProposalController extends Controller
             $cabangOlahragaForProposal = $validatedData['cabang_olahraga'];
         }
 
-        Log::info('Update Method - Final mitraId before Proposal update: ' . ($mitraId ?? 'NULL'));
-        Log::info('Update Method - Final cabangOlahragaForProposal before Proposal update: ' . ($cabangOlahragaForProposal ?? 'NULL'));
 
         $jenisBerkas = implode(',', $validatedData['jenis_berkas']);
 
@@ -896,7 +840,6 @@ class ProposalController extends Controller
             $filePath = $proposal->file_utama;
         }
 
-        // >>> PERBAIKI BAGIAN INI: TAMBAHKAN 'user_id' KE DALAM ARRAY UPDATE
         $proposal->update([
             'judul_berkas' => $validatedData['judul_berkas'] ?? '',
             'pengaju' => $validatedData['pengaju'],
@@ -918,9 +861,6 @@ class ProposalController extends Controller
             'data_updated_at' => Carbon::now(),
             'data_updated_by_user_id' => Auth::id(),
         ]);
-
-        Log::info('DEBUG INFO: Proposal successfully updated. Updated user_id in DB should be: ' . $userLoggedInId);
-        Log::info('Update Method - Proposal updated. ID: ' . $proposal->id . ', Cabor: ' . $proposal->cabang_olahraga . ', Mitra ID: ' . ($proposal->mitra_id ?? 'NULL'));
 
         return redirect()->route('klien.proposal.data-proposal')->with('success', 'Proposal berhasil diperbarui.');
     }

@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/css/bootstrap.min.css') }}">
 
     <!-- Plugins CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/plugins/morrisjs/morris.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('assets/plugins/morrisjs/morris.css') }}"> -->
+    <!-- <link rel="stylesheet" href="{{ asset('assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.css') }}"> -->
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
